@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_provider.dart';
+import '../theme/responsive.dart';
 import '../theme/retro_theme.dart';
 import '../widgets/ascii_header.dart';
 import '../widgets/retro_button.dart';
@@ -41,17 +42,45 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
+    final isMobile = context.isMobile;
+    final horizontalPadding = isMobile ? 16.0 : 24.0;
 
     return Scaffold(
       body: ScanlineOverlay(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.symmetric(
+              horizontal: horizontalPadding,
+              vertical: isMobile ? 16 : 24,
+            ),
             child: Column(
               mainAxisAlignment: .center,
               children: [
-                const AsciiHeader(),
-                const SizedBox(height: 32),
+                // ASCII art: hide on small screens, show compact on tablet
+                if (!isMobile) const AsciiHeader(),
+                if (!isMobile) const SizedBox(height: 32),
+
+                // On mobile, show a simple text header instead
+                if (isMobile) ...[
+                  Text(
+                    '[ CTRL PANEL ]',
+                    style: GoogleFonts.vt323(
+                      fontSize: 28,
+                      color: RetroColors.neonGreen,
+                      letterSpacing: 3,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Device Configuration Manager v1.0',
+                    style: GoogleFonts.shareTechMono(
+                      fontSize: 10,
+                      color: RetroColors.neonCyan.withValues(alpha: 0.6),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                ],
+
                 RetroWindow(
                   title: 'AUTHORIZATION',
                   maxWidth: 440,
@@ -60,17 +89,15 @@ class _LoginPageState extends State<LoginPage> {
                     child: Column(
                       crossAxisAlignment: .stretch,
                       children: [
-                        // Decorative text
                         Text(
                           '> Enter your credentials to access the system_',
                           style: GoogleFonts.shareTechMono(
-                            fontSize: 12,
+                            fontSize: isMobile ? 11 : 12,
                             color: RetroColors.textMuted,
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        SizedBox(height: isMobile ? 16 : 20),
 
-                        // Login field
                         RetroTextField(
                           controller: _loginController,
                           labelText: 'LOGIN',
@@ -81,9 +108,8 @@ class _LoginPageState extends State<LoginPage> {
                               ? 'Login required'
                               : null,
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: isMobile ? 12 : 16),
 
-                        // Password field
                         RetroTextField(
                           controller: _passwordController,
                           labelText: 'PASSWORD',
@@ -98,7 +124,6 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(height: 8),
 
-                        // Error
                         if (auth.error != null) ...[
                           const SizedBox(height: 8),
                           Container(
@@ -135,9 +160,8 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ],
 
-                        const SizedBox(height: 20),
+                        SizedBox(height: isMobile ? 16 : 20),
 
-                        // Login button
                         RetroButton(
                           label: '[ LOGIN ]',
                           icon: Icons.login,
@@ -146,11 +170,10 @@ class _LoginPageState extends State<LoginPage> {
                           expanded: true,
                         ),
 
-                        const SizedBox(height: 16),
+                        SizedBox(height: isMobile ? 12 : 16),
                         const Divider(),
-                        const SizedBox(height: 12),
+                        SizedBox(height: isMobile ? 8 : 12),
 
-                        // Switch to register
                         Row(
                           mainAxisAlignment: .center,
                           children: [
@@ -182,8 +205,8 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
-                _buildFooter(),
+                SizedBox(height: isMobile ? 16 : 24),
+                _buildFooter(isMobile),
               ],
             ),
           ),
@@ -192,9 +215,11 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildFooter() {
+  Widget _buildFooter(bool isMobile) {
     return Text(
-      '─── [ (c) 2025 CTRL PANEL TEAM // ALL RIGHTS REVERSED ] ───',
+      isMobile
+          ? '(c) 2025 CTRL PANEL TEAM'
+          : '─── [ (c) 2025 CTRL PANEL TEAM // ALL RIGHTS REVERSED ] ───',
       style: GoogleFonts.shareTechMono(
         fontSize: 9,
         color: RetroColors.textDim,

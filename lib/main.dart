@@ -1,4 +1,8 @@
+import 'dart:io' show Platform;
+
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/auth_provider.dart';
@@ -7,11 +11,23 @@ import 'providers/device_provider.dart';
 import 'router/app_router.dart';
 import 'services/api_service.dart';
 import 'services/mock_api_service.dart';
+import 'theme/responsive.dart';
 import 'theme/retro_theme.dart';
 
-void main() {
-  final apiService = MockApiService();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
+  // Force portrait-first on mobile, allow all on desktop/web
+  if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+  }
+
+  final apiService = MockApiService();
   runApp(ConfigPanelApp(apiService: apiService));
 }
 
@@ -53,6 +69,10 @@ class _ConfigPanelAppState extends State<ConfigPanelApp> {
         debugShowCheckedModeBanner: false,
         theme: RetroTheme.darkTheme,
         routerConfig: _appRouter.router,
+        builder: (context, child) {
+          // Enforce minimum size: if viewport is smaller, content scrolls
+          return MinSizeContainer(child: child ?? const SizedBox.shrink());
+        },
       ),
     );
   }

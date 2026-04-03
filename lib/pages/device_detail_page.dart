@@ -8,6 +8,7 @@ import '../models/device.dart';
 import '../providers/auth_provider.dart';
 import '../providers/config_provider.dart';
 import '../providers/device_provider.dart';
+import '../theme/responsive.dart';
 import '../theme/retro_theme.dart';
 import '../widgets/retro_button.dart';
 import '../widgets/retro_status_badge.dart';
@@ -55,6 +56,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     final deviceProvider = context.watch<DeviceProvider>();
     final configProvider = context.watch<ConfigProvider>();
     final device = deviceProvider.getDeviceById(widget.deviceId);
+    final isWide = context.isWide;
 
     return Scaffold(
       body: ScanlineOverlay(
@@ -62,33 +64,9 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           children: [
             _buildTopBar(context, device),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  crossAxisAlignment: .start,
-                  children: [
-                    // ── Left: Device info + upload form ──
-                    Expanded(
-                      flex: 2,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            _buildDeviceInfo(device),
-                            const SizedBox(height: 16),
-                            _buildUploadForm(configProvider),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    // ── Right: Config history ──
-                    Expanded(
-                      flex: 3,
-                      child: _buildConfigHistory(configProvider),
-                    ),
-                  ],
-                ),
-              ),
+              child: isWide
+                  ? _buildWideLayout(device, configProvider)
+                  : _buildNarrowLayout(device, configProvider),
             ),
           ],
         ),
@@ -96,51 +74,170 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     );
   }
 
+  // ── WIDE LAYOUT (tablet/desktop): side-by-side ──
+
+  Widget _buildWideLayout(Device? device, ConfigProvider configProvider) {
+    return Padding(
+      padding: EdgeInsets.all(context.isDesktop ? 16 : 12),
+      child: Row(
+        crossAxisAlignment: .start,
+        children: [
+          Expanded(
+            flex: 2,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  _buildDeviceInfo(device),
+                  const SizedBox(height: 16),
+                  _buildUploadForm(configProvider),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(flex: 3, child: _buildConfigHistory(configProvider)),
+        ],
+      ),
+    );
+  }
+
+  // ── NARROW LAYOUT (mobile): single column with tabs ──
+
+  Widget _buildNarrowLayout(Device? device, ConfigProvider configProvider) {
+    return DefaultTabController(
+      length: 3,
+      child: Column(
+        children: [
+          Container(
+            color: RetroColors.surface,
+            child: TabBar(
+              indicatorColor: RetroColors.neonGreen,
+              labelColor: RetroColors.neonGreen,
+              unselectedLabelColor: RetroColors.textMuted,
+              labelStyle: GoogleFonts.shareTechMono(fontSize: 11),
+              tabs: const [
+                Tab(text: 'INFO'),
+                Tab(text: 'HISTORY'),
+                Tab(text: 'UPLOAD'),
+              ],
+            ),
+          ),
+          Expanded(
+            child: TabBarView(
+              children: [
+                // Tab 1: Device info
+                SingleChildScrollView(
+                  padding: const EdgeInsets.all(8),
+                  child: _buildDeviceInfo(device),
+                ),
+                // Tab 2: Config history
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: _buildConfigHistory(configProvider),
+                ),
+                // Tab 3: Upload form
+                SingleChildScrollView(
+                  padding: const EdgeInsets.all(8),
+                  child: _buildUploadForm(configProvider),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── TOP BAR ──
+
   Widget _buildTopBar(BuildContext context, Device? device) {
+    final isMobile = context.isMobile;
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: isMobile ? 8 : 16, vertical: 8),
       decoration: const BoxDecoration(
         color: RetroColors.surface,
         border: Border(bottom: BorderSide(color: RetroColors.surfaceBorder)),
       ),
       child: Row(
         children: [
-          RetroButton(
-            label: '<< BACK',
-            icon: Icons.arrow_back,
-            accentColor: RetroColors.neonCyan,
-            onPressed: widget.onBack,
-          ),
-          const SizedBox(width: 16),
-          Text(
-            '[ DEVICE #${widget.deviceId} ]',
-            style: GoogleFonts.vt323(
-              fontSize: 24,
-              color: RetroColors.neonGreen,
-              letterSpacing: 2,
+          // Back button: icon-only on mobile
+          isMobile
+              ? IconButton(
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    color: RetroColors.neonCyan,
+                    size: 20,
+                  ),
+                  tooltip: 'Back',
+                  onPressed: widget.onBack,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                )
+              : RetroButton(
+                  label: '<< BACK',
+                  icon: Icons.arrow_back,
+                  accentColor: RetroColors.neonCyan,
+                  onPressed: widget.onBack,
+                ),
+          SizedBox(width: isMobile ? 8 : 16),
+
+          // Device title
+          Expanded(
+            child: Row(
+              children: [
+                Text(
+                  isMobile
+                      ? '#${widget.deviceId}'
+                      : '[ DEVICE #${widget.deviceId} ]',
+                  style: GoogleFonts.vt323(
+                    fontSize: isMobile ? 18 : 24,
+                    color: RetroColors.neonGreen,
+                    letterSpacing: 2,
+                  ),
+                ),
+                if (device != null && !isMobile) ...[
+                  const SizedBox(width: 12),
+                  Flexible(
+                    child: Text(
+                      device.hostname,
+                      style: GoogleFonts.shareTechMono(
+                        fontSize: 16,
+                        color: RetroColors.neonCyan,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ],
             ),
           ),
-          if (device != null) ...[
-            const SizedBox(width: 12),
-            Text(
-              device.hostname,
-              style: GoogleFonts.shareTechMono(
-                fontSize: 16,
-                color: RetroColors.neonCyan,
-              ),
-            ),
-          ],
-          const Spacer(),
-          RetroButton(
-            label: 'LOGOUT',
-            icon: Icons.logout,
-            accentColor: RetroColors.neonRed,
-            onPressed: () => context.read<AuthProvider>().logout(),
-          ),
+
+          // Logout
+          isMobile
+              ? IconButton(
+                  icon: const Icon(
+                    Icons.logout,
+                    color: RetroColors.neonRed,
+                    size: 20,
+                  ),
+                  tooltip: 'Logout',
+                  onPressed: () => context.read<AuthProvider>().logout(),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                )
+              : RetroButton(
+                  label: 'LOGOUT',
+                  icon: Icons.logout,
+                  accentColor: RetroColors.neonRed,
+                  onPressed: () => context.read<AuthProvider>().logout(),
+                ),
         ],
       ),
     );
   }
+
+  // ── DEVICE INFO ──
 
   Widget _buildDeviceInfo(Device? device) {
     if (device == null) {
@@ -192,35 +289,60 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   }
 
   Widget _infoRow(String label, String value, Color valueColor) {
+    final isMobile = context.isMobile;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        crossAxisAlignment: .start,
-        children: [
-          SizedBox(
-            width: 100,
-            child: Text(
-              '$label:',
-              style: GoogleFonts.shareTechMono(
-                fontSize: 12,
-                color: RetroColors.textMuted,
-              ),
+      child: isMobile
+          ? Column(
+              crossAxisAlignment: .start,
+              children: [
+                Text(
+                  '$label:',
+                  style: GoogleFonts.shareTechMono(
+                    fontSize: 11,
+                    color: RetroColors.textMuted,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: GoogleFonts.shareTechMono(
+                    fontSize: 13,
+                    color: valueColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            )
+          : Row(
+              crossAxisAlignment: .start,
+              children: [
+                SizedBox(
+                  width: 100,
+                  child: Text(
+                    '$label:',
+                    style: GoogleFonts.shareTechMono(
+                      fontSize: 12,
+                      color: RetroColors.textMuted,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    value,
+                    style: GoogleFonts.shareTechMono(
+                      fontSize: 13,
+                      color: valueColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: GoogleFonts.shareTechMono(
-                fontSize: 13,
-                color: valueColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
+
+  // ── UPLOAD FORM ──
 
   Widget _buildUploadForm(ConfigProvider configProvider) {
     return RetroWindow(
@@ -238,7 +360,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
               ),
             ),
             const SizedBox(height: 12),
-
             RetroTextField(
               controller: _versionController,
               labelText: 'VERSION',
@@ -248,17 +369,15 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                   v == null || v.trim().isEmpty ? 'Version required' : null,
             ),
             const SizedBox(height: 12),
-
             RetroTextField(
               controller: _contentController,
               labelText: 'CONFIGURATION CONTENT',
               hintText: '# paste config here...',
-              maxLines: 8,
+              maxLines: context.isMobile ? 5 : 8,
               validator: (v) =>
                   v == null || v.trim().isEmpty ? 'Content required' : null,
             ),
             const SizedBox(height: 16),
-
             if (configProvider.error != null) ...[
               Container(
                 padding: const EdgeInsets.all(8),
@@ -278,7 +397,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 ),
               ),
             ],
-
             RetroButton(
               label: '[ SAVE CONFIG ]',
               icon: Icons.save,
@@ -315,6 +433,8 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     }
   }
 
+  // ── CONFIG HISTORY ──
+
   Widget _buildConfigHistory(ConfigProvider configProvider) {
     return RetroWindow(
       title: 'CONFIG HISTORY // ${configProvider.configs.length} VERSIONS',
@@ -336,7 +456,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
               ),
             )
           : ListView.separated(
-              padding: const EdgeInsets.all(0),
+              padding: EdgeInsets.zero,
               itemCount: configProvider.configs.length,
               separatorBuilder: (_, _) =>
                   const Divider(height: 1, color: RetroColors.surfaceBorder),
@@ -345,6 +465,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 return _ConfigTile(
                   config: config,
                   isExpanded: _expandedConfigId == config.id,
+                  isMobile: context.isMobile,
                   onToggle: () {
                     setState(() {
                       _expandedConfigId = _expandedConfigId == config.id
@@ -409,10 +530,14 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   }
 }
 
-/// Individual config entry in the history list.
+// ══════════════════════════════════════════════════════════════
+//  CONFIG TILE — responsive for mobile / desktop
+// ══════════════════════════════════════════════════════════════
+
 class _ConfigTile extends StatelessWidget {
   final DeviceConfig config;
   final bool isExpanded;
+  final bool isMobile;
   final VoidCallback onToggle;
   final VoidCallback? onApply;
   final bool isApplying;
@@ -420,6 +545,7 @@ class _ConfigTile extends StatelessWidget {
   const _ConfigTile({
     required this.config,
     required this.isExpanded,
+    required this.isMobile,
     required this.onToggle,
     this.onApply,
     required this.isApplying,
@@ -432,77 +558,29 @@ class _ConfigTile extends StatelessWidget {
     return Column(
       crossAxisAlignment: .stretch,
       children: [
-        // ── Header row ──
+        // ── Header ──
         InkWell(
           onTap: onToggle,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            child: Row(
-              children: [
-                Icon(
-                  isExpanded ? Icons.expand_less : Icons.expand_more,
-                  color: RetroColors.neonCyan,
-                  size: 18,
-                ),
-                const SizedBox(width: 8),
-                // Version
-                Text(
-                  config.version,
-                  style: GoogleFonts.shareTechMono(
-                    fontSize: 14,
-                    color: RetroColors.neonCyan,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                // Created date
-                Text(
-                  'created: ${dateFormat.format(config.createdAt)}',
-                  style: GoogleFonts.shareTechMono(
-                    fontSize: 11,
-                    color: RetroColors.textMuted,
-                  ),
-                ),
-                const Spacer(),
-                // Applied status
-                if (config.isApplied) ...[
-                  Text(
-                    'applied: ${dateFormat.format(config.appliedAt!)}',
-                    style: GoogleFonts.shareTechMono(
-                      fontSize: 11,
-                      color: RetroColors.neonGreen.withValues(alpha: 0.6),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  RetroStatusBadge(
-                    label: 'APPLIED',
-                    active: true,
-                    activeColor: RetroColors.neonGreen,
-                  ),
-                ] else ...[
-                  RetroStatusBadge(
-                    label: 'PENDING',
-                    active: false,
-                    inactiveColor: RetroColors.neonYellow,
-                  ),
-                  const SizedBox(width: 8),
-                  RetroButton(
-                    label: 'APPLY',
-                    icon: Icons.check_circle_outline,
-                    accentColor: RetroColors.neonOrange,
-                    isLoading: isApplying,
-                    onPressed: onApply,
-                  ),
-                ],
-              ],
+            padding: EdgeInsets.symmetric(
+              horizontal: isMobile ? 8 : 12,
+              vertical: isMobile ? 8 : 10,
             ),
+            child: isMobile
+                ? _buildMobileHeader(dateFormat)
+                : _buildDesktopHeader(dateFormat),
           ),
         ),
 
         // ── Expanded content ──
         if (isExpanded)
           Container(
-            margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+            margin: EdgeInsets.fromLTRB(
+              isMobile ? 8 : 12,
+              0,
+              isMobile ? 8 : 12,
+              isMobile ? 8 : 12,
+            ),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: const Color(0xFF0D0D1A),
@@ -534,7 +612,7 @@ class _ConfigTile extends StatelessWidget {
                 SelectableText(
                   config.content,
                   style: GoogleFonts.courierPrime(
-                    fontSize: 13,
+                    fontSize: isMobile ? 12 : 13,
                     color: RetroColors.neonGreen.withValues(alpha: 0.8),
                     height: 1.5,
                   ),
@@ -542,6 +620,139 @@ class _ConfigTile extends StatelessWidget {
               ],
             ),
           ),
+      ],
+    );
+  }
+
+  // ── MOBILE: stacked layout ──
+
+  Widget _buildMobileHeader(DateFormat dateFormat) {
+    return Column(
+      crossAxisAlignment: .start,
+      children: [
+        // Row 1: expand icon + version + status
+        Row(
+          children: [
+            Icon(
+              isExpanded ? Icons.expand_less : Icons.expand_more,
+              color: RetroColors.neonCyan,
+              size: 16,
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                config.version,
+                style: GoogleFonts.shareTechMono(
+                  fontSize: 13,
+                  color: RetroColors.neonCyan,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            if (config.isApplied)
+              const RetroStatusBadge(
+                label: 'APPLIED',
+                active: true,
+                activeColor: RetroColors.neonGreen,
+              )
+            else
+              const RetroStatusBadge(
+                label: 'PENDING',
+                active: false,
+                inactiveColor: RetroColors.neonYellow,
+              ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        // Row 2: dates
+        Text(
+          'created: ${dateFormat.format(config.createdAt)}',
+          style: GoogleFonts.shareTechMono(
+            fontSize: 10,
+            color: RetroColors.textMuted,
+          ),
+        ),
+        if (config.isApplied)
+          Text(
+            'applied: ${dateFormat.format(config.appliedAt!)}',
+            style: GoogleFonts.shareTechMono(
+              fontSize: 10,
+              color: RetroColors.neonGreen.withValues(alpha: 0.6),
+            ),
+          ),
+        // Row 3: apply button if needed
+        if (!config.isApplied) ...[
+          const SizedBox(height: 6),
+          RetroButton(
+            label: 'APPLY',
+            icon: Icons.check_circle_outline,
+            accentColor: RetroColors.neonOrange,
+            isLoading: isApplying,
+            onPressed: onApply,
+            expanded: true,
+          ),
+        ],
+      ],
+    );
+  }
+
+  // ── DESKTOP: single-row layout ──
+
+  Widget _buildDesktopHeader(DateFormat dateFormat) {
+    return Row(
+      children: [
+        Icon(
+          isExpanded ? Icons.expand_less : Icons.expand_more,
+          color: RetroColors.neonCyan,
+          size: 18,
+        ),
+        const SizedBox(width: 8),
+        Text(
+          config.version,
+          style: GoogleFonts.shareTechMono(
+            fontSize: 14,
+            color: RetroColors.neonCyan,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(width: 16),
+        Text(
+          'created: ${dateFormat.format(config.createdAt)}',
+          style: GoogleFonts.shareTechMono(
+            fontSize: 11,
+            color: RetroColors.textMuted,
+          ),
+        ),
+        const Spacer(),
+        if (config.isApplied) ...[
+          Text(
+            'applied: ${dateFormat.format(config.appliedAt!)}',
+            style: GoogleFonts.shareTechMono(
+              fontSize: 11,
+              color: RetroColors.neonGreen.withValues(alpha: 0.6),
+            ),
+          ),
+          const SizedBox(width: 8),
+          const RetroStatusBadge(
+            label: 'APPLIED',
+            active: true,
+            activeColor: RetroColors.neonGreen,
+          ),
+        ] else ...[
+          const RetroStatusBadge(
+            label: 'PENDING',
+            active: false,
+            inactiveColor: RetroColors.neonYellow,
+          ),
+          const SizedBox(width: 8),
+          RetroButton(
+            label: 'APPLY',
+            icon: Icons.check_circle_outline,
+            accentColor: RetroColors.neonOrange,
+            isLoading: isApplying,
+            onPressed: onApply,
+          ),
+        ],
       ],
     );
   }

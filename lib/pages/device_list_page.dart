@@ -3,8 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../models/device.dart';
 import '../providers/auth_provider.dart';
 import '../providers/device_provider.dart';
+import '../theme/responsive.dart';
 import '../theme/retro_theme.dart';
 import '../widgets/retro_button.dart';
 import '../widgets/retro_status_badge.dart';
@@ -47,13 +49,9 @@ class _DeviceListPageState extends State<DeviceListPage> {
       body: ScanlineOverlay(
         child: Column(
           children: [
-            // ── Top bar ──
             _buildTopBar(context),
-
-            // ── Content ──
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
+              child: ResponsivePadding(
                 child: RetroWindow(
                   title:
                       'DEVICE REGISTRY // ${deviceProvider.devices.length} ENTRIES',
@@ -61,11 +59,8 @@ class _DeviceListPageState extends State<DeviceListPage> {
                   child: Column(
                     crossAxisAlignment: .stretch,
                     children: [
-                      // ── Filters ──
                       _buildFilters(context, deviceProvider),
                       const Divider(height: 1),
-
-                      // ── Table ──
                       Expanded(
                         child: deviceProvider.isLoading
                             ? _buildLoading()
@@ -73,7 +68,13 @@ class _DeviceListPageState extends State<DeviceListPage> {
                             ? _buildError(deviceProvider.error!)
                             : deviceProvider.devices.isEmpty
                             ? _buildEmpty()
-                            : _buildTable(context, deviceProvider, dateFormat),
+                            : context.isWide
+                            ? _buildTable(context, deviceProvider, dateFormat)
+                            : _buildCardList(
+                                context,
+                                deviceProvider,
+                                dateFormat,
+                              ),
                       ),
                     ],
                   ),
@@ -86,52 +87,104 @@ class _DeviceListPageState extends State<DeviceListPage> {
     );
   }
 
+  // ── TOP BAR ──
+
   Widget _buildTopBar(BuildContext context) {
+    final isMobile = context.isMobile;
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 10 : 16,
+        vertical: 8,
+      ),
       decoration: const BoxDecoration(
         color: RetroColors.surface,
         border: Border(bottom: BorderSide(color: RetroColors.surfaceBorder)),
       ),
       child: Row(
         children: [
-          // ASCII logo
           Text(
-            '[ CTRL PANEL ]',
+            isMobile ? '[CTRL]' : '[ CTRL PANEL ]',
             style: GoogleFonts.vt323(
-              fontSize: 24,
+              fontSize: isMobile ? 20 : 24,
               color: RetroColors.neonGreen,
               letterSpacing: 2,
             ),
           ),
           const Spacer(),
-          // System info
-          Text(
-            'SYS.TIME: ${DateFormat('HH:mm:ss').format(DateTime.now())}',
-            style: GoogleFonts.shareTechMono(
-              fontSize: 11,
-              color: RetroColors.textMuted,
+          if (!isMobile) ...[
+            Text(
+              'SYS.TIME: ${DateFormat('HH:mm:ss').format(DateTime.now())}',
+              style: GoogleFonts.shareTechMono(
+                fontSize: 11,
+                color: RetroColors.textMuted,
+              ),
             ),
-          ),
-          const SizedBox(width: 20),
-          // Logout
-          RetroButton(
-            label: 'LOGOUT',
-            icon: Icons.logout,
-            accentColor: RetroColors.neonRed,
-            onPressed: () => context.read<AuthProvider>().logout(),
-          ),
+            const SizedBox(width: 20),
+          ],
+          isMobile
+              ? IconButton(
+                  icon: const Icon(Icons.logout, color: RetroColors.neonRed),
+                  iconSize: 20,
+                  tooltip: 'Logout',
+                  onPressed: () => context.read<AuthProvider>().logout(),
+                )
+              : RetroButton(
+                  label: 'LOGOUT',
+                  icon: Icons.logout,
+                  accentColor: RetroColors.neonRed,
+                  onPressed: () => context.read<AuthProvider>().logout(),
+                ),
         ],
       ),
     );
   }
 
+  // ── FILTERS ──
+
   Widget _buildFilters(BuildContext context, DeviceProvider provider) {
+    final isMobile = context.isMobile;
+    final padding = isMobile ? 8.0 : 12.0;
+
+    if (isMobile) {
+      return Padding(
+        padding: EdgeInsets.all(padding),
+        child: Column(
+          children: [
+            RetroTextField(
+              controller: _searchController,
+              hintText: '> search hostname...',
+              prefixIcon: Icons.search,
+              onChanged: (v) => provider.setSearch(v),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: _FilterChipRow(
+                    currentFilter: provider.filterActive,
+                    onChanged: provider.setFilter,
+                    compact: true,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                IconButton(
+                  icon: const Icon(Icons.refresh, color: RetroColors.neonCyan),
+                  iconSize: 20,
+                  tooltip: 'Refresh',
+                  onPressed: () => provider.loadDevices(),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
+
     return Padding(
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(padding),
       child: Row(
         children: [
-          // Search
           Expanded(
             flex: 3,
             child: RetroTextField(
@@ -142,8 +195,6 @@ class _DeviceListPageState extends State<DeviceListPage> {
             ),
           ),
           const SizedBox(width: 12),
-
-          // Activity filter
           Expanded(
             flex: 2,
             child: _FilterChipRow(
@@ -151,10 +202,7 @@ class _DeviceListPageState extends State<DeviceListPage> {
               onChanged: provider.setFilter,
             ),
           ),
-
           const SizedBox(width: 12),
-
-          // Refresh
           RetroButton(
             label: 'REFRESH',
             icon: Icons.refresh,
@@ -165,6 +213,8 @@ class _DeviceListPageState extends State<DeviceListPage> {
       ),
     );
   }
+
+  // ── STATES ──
 
   Widget _buildLoading() {
     return Center(
@@ -187,19 +237,27 @@ class _DeviceListPageState extends State<DeviceListPage> {
 
   Widget _buildError(String error) {
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.error_outline, color: RetroColors.neonRed, size: 48),
-          const SizedBox(height: 16),
-          Text(
-            '[FATAL] $error',
-            style: GoogleFonts.shareTechMono(
-              fontSize: 14,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.error_outline,
               color: RetroColors.neonRed,
+              size: 48,
             ),
-          ),
-        ],
+            const SizedBox(height: 16),
+            Text(
+              '[FATAL] $error',
+              style: GoogleFonts.shareTechMono(
+                fontSize: 14,
+                color: RetroColors.neonRed,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -217,60 +275,228 @@ class _DeviceListPageState extends State<DeviceListPage> {
     );
   }
 
+  // ── DESKTOP TABLE ──
+
   Widget _buildTable(
     BuildContext context,
     DeviceProvider provider,
     DateFormat dateFormat,
   ) {
-    return SingleChildScrollView(
-      child: DataTable(
-        showCheckboxColumn: false,
-        columnSpacing: 24,
-        columns: const [
-          DataColumn(label: Text('ID')),
-          DataColumn(label: Text('HOSTNAME')),
-          DataColumn(label: Text('IP ADDRESS')),
-          DataColumn(label: Text('LOCATION')),
-          DataColumn(label: Text('STATUS')),
-          DataColumn(label: Text('CREATED')),
-        ],
-        rows: provider.devices.map((device) {
-          return DataRow(
-            onSelectChanged: (_) => widget.onDeviceTap(device.id),
-            cells: [
-              DataCell(Text('#${device.id}')),
-              DataCell(
-                Text(
-                  device.hostname,
-                  style: const TextStyle(
-                    color: RetroColors.neonCyan,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minWidth: constraints.maxWidth),
+              child: DataTable(
+                showCheckboxColumn: false,
+                columnSpacing: context.isDesktop ? 24 : 16,
+                dataRowMinHeight: 44,
+                dataRowMaxHeight: 56,
+                columns: const [
+                  DataColumn(label: Text('ID')),
+                  DataColumn(label: Text('HOSTNAME')),
+                  DataColumn(label: Text('IP ADDRESS')),
+                  DataColumn(label: Text('LOCATION')),
+                  DataColumn(label: Text('STATUS')),
+                  DataColumn(label: Text('CREATED')),
+                ],
+                rows: provider.devices.map((device) {
+                  return DataRow(
+                    onSelectChanged: (_) => widget.onDeviceTap(device.id),
+                    cells: [
+                      DataCell(Text('#${device.id}')),
+                      DataCell(
+                        Text(
+                          device.hostname,
+                          style: const TextStyle(
+                            color: RetroColors.neonCyan,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      DataCell(Text(device.ip)),
+                      DataCell(
+                        Text(device.location, overflow: TextOverflow.ellipsis),
+                      ),
+                      DataCell(
+                        RetroStatusBadge(
+                          label: device.isActive ? 'ONLINE' : 'OFFLINE',
+                          active: device.isActive,
+                        ),
+                      ),
+                      DataCell(Text(dateFormat.format(device.createdAt))),
+                    ],
+                  );
+                }).toList(),
               ),
-              DataCell(Text(device.ip)),
-              DataCell(Text(device.location)),
-              DataCell(
-                RetroStatusBadge(
-                  label: device.isActive ? 'ONLINE' : 'OFFLINE',
-                  active: device.isActive,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // ── MOBILE CARD LIST ──
+
+  Widget _buildCardList(
+    BuildContext context,
+    DeviceProvider provider,
+    DateFormat dateFormat,
+  ) {
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      itemCount: provider.devices.length,
+      itemBuilder: (context, index) {
+        final device = provider.devices[index];
+        return _DeviceCard(
+          device: device,
+          dateFormat: dateFormat,
+          onTap: () => widget.onDeviceTap(device.id),
+        );
+      },
+    );
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+//  MOBILE DEVICE CARD
+// ══════════════════════════════════════════════════════════════
+
+class _DeviceCard extends StatelessWidget {
+  final Device device;
+  final DateFormat dateFormat;
+  final VoidCallback onTap;
+
+  const _DeviceCard({
+    required this.device,
+    required this.dateFormat,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: RetroColors.surface,
+              border: Border.all(color: RetroColors.surfaceBorder),
+            ),
+            child: Column(
+              crossAxisAlignment: .start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      '#${device.id}',
+                      style: GoogleFonts.shareTechMono(
+                        fontSize: 11,
+                        color: RetroColors.textMuted,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        device.hostname,
+                        style: GoogleFonts.shareTechMono(
+                          fontSize: 14,
+                          color: RetroColors.neonCyan,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    RetroStatusBadge(
+                      label: device.isActive ? 'ON' : 'OFF',
+                      active: device.isActive,
+                    ),
+                  ],
                 ),
-              ),
-              DataCell(Text(dateFormat.format(device.createdAt))),
-            ],
-          );
-        }).toList(),
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.lan_outlined,
+                      size: 12,
+                      color: RetroColors.textMuted,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      device.ip,
+                      style: GoogleFonts.shareTechMono(
+                        fontSize: 12,
+                        color: RetroColors.neonGreen,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    const Icon(
+                      Icons.location_on_outlined,
+                      size: 12,
+                      color: RetroColors.textMuted,
+                    ),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        device.location,
+                        style: GoogleFonts.shareTechMono(
+                          fontSize: 12,
+                          color: RetroColors.textMuted,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Text(
+                      dateFormat.format(device.createdAt),
+                      style: GoogleFonts.shareTechMono(
+                        fontSize: 10,
+                        color: RetroColors.textDim,
+                      ),
+                    ),
+                    const Spacer(),
+                    const Icon(
+                      Icons.chevron_right,
+                      size: 16,
+                      color: RetroColors.neonGreen,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
 }
 
-/// Filter chips for activity status.
+// ══════════════════════════════════════════════════════════════
+//  FILTER CHIPS
+// ══════════════════════════════════════════════════════════════
+
 class _FilterChipRow extends StatelessWidget {
   final bool? currentFilter;
   final void Function(bool?) onChanged;
+  final bool compact;
 
-  const _FilterChipRow({required this.currentFilter, required this.onChanged});
+  const _FilterChipRow({
+    required this.currentFilter,
+    required this.onChanged,
+    this.compact = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -278,10 +504,10 @@ class _FilterChipRow extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         _chip(context, label: 'ALL', value: null),
-        const SizedBox(width: 6),
-        _chip(context, label: 'ONLINE', value: true),
-        const SizedBox(width: 6),
-        _chip(context, label: 'OFFLINE', value: false),
+        SizedBox(width: compact ? 4 : 6),
+        _chip(context, label: compact ? 'ON' : 'ONLINE', value: true),
+        SizedBox(width: compact ? 4 : 6),
+        _chip(context, label: compact ? 'OFF' : 'OFFLINE', value: false),
       ],
     );
   }
@@ -298,29 +524,37 @@ class _FilterChipRow extends StatelessWidget {
         ? RetroColors.neonGreen
         : RetroColors.neonRed;
 
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: () => onChanged(value),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-          decoration: BoxDecoration(
-            color: selected
-                ? color.withValues(alpha: 0.15)
-                : Colors.transparent,
-            border: Border.all(
-              color: selected ? color : RetroColors.surfaceBorder,
-              width: selected ? 1.5 : 1,
+    return Expanded(
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: () => onChanged(value),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            padding: EdgeInsets.symmetric(
+              horizontal: compact ? 6 : 10,
+              vertical: 4,
             ),
-          ),
-          child: Text(
-            label,
-            style: GoogleFonts.shareTechMono(
-              fontSize: 11,
-              color: selected ? color : RetroColors.textMuted,
-              letterSpacing: 1,
-              fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: selected
+                  ? color.withValues(alpha: 0.15)
+                  : Colors.transparent,
+              border: Border.all(
+                color: selected ? color : RetroColors.surfaceBorder,
+                width: selected ? 1.5 : 1,
+              ),
+            ),
+            child: Text(
+              label,
+              style: GoogleFonts.shareTechMono(
+                fontSize: compact ? 10 : 11,
+                color: selected ? color : RetroColors.textMuted,
+                letterSpacing: 1,
+                fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+              ),
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ),

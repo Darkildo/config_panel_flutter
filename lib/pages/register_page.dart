@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_provider.dart';
+import '../theme/responsive.dart';
 import '../theme/retro_theme.dart';
 import '../widgets/ascii_header.dart';
 import '../widgets/retro_button.dart';
@@ -43,17 +44,43 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
+    final isMobile = context.isMobile;
+    final horizontalPadding = isMobile ? 16.0 : 24.0;
 
     return Scaffold(
       body: ScanlineOverlay(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.symmetric(
+              horizontal: horizontalPadding,
+              vertical: isMobile ? 16 : 24,
+            ),
             child: Column(
               mainAxisAlignment: .center,
               children: [
-                const AsciiHeader(),
-                const SizedBox(height: 32),
+                if (!isMobile) const AsciiHeader(),
+                if (!isMobile) const SizedBox(height: 32),
+
+                if (isMobile) ...[
+                  Text(
+                    '[ CTRL PANEL ]',
+                    style: GoogleFonts.vt323(
+                      fontSize: 28,
+                      color: RetroColors.neonGreen,
+                      letterSpacing: 3,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'New Account Registration',
+                    style: GoogleFonts.shareTechMono(
+                      fontSize: 10,
+                      color: RetroColors.neonCyan.withValues(alpha: 0.6),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                ],
+
                 RetroWindow(
                   title: 'NEW USER REGISTRATION',
                   maxWidth: 440,
@@ -65,11 +92,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         Text(
                           '> Create new credentials for system access_',
                           style: GoogleFonts.shareTechMono(
-                            fontSize: 12,
+                            fontSize: isMobile ? 11 : 12,
                             color: RetroColors.textMuted,
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        SizedBox(height: isMobile ? 16 : 20),
 
                         RetroTextField(
                           controller: _loginController,
@@ -87,7 +114,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: isMobile ? 12 : 16),
 
                         RetroTextField(
                           controller: _passwordController,
@@ -104,7 +131,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: isMobile ? 12 : 16),
 
                         RetroTextField(
                           controller: _confirmController,
@@ -158,7 +185,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ],
 
-                        const SizedBox(height: 20),
+                        SizedBox(height: isMobile ? 16 : 20),
 
                         RetroButton(
                           label: '[ REGISTER ]',
@@ -169,9 +196,9 @@ class _RegisterPageState extends State<RegisterPage> {
                           accentColor: RetroColors.neonCyan,
                         ),
 
-                        const SizedBox(height: 16),
+                        SizedBox(height: isMobile ? 12 : 16),
                         const Divider(),
-                        const SizedBox(height: 12),
+                        SizedBox(height: isMobile ? 8 : 12),
 
                         Row(
                           mainAxisAlignment: .center,
@@ -204,9 +231,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: isMobile ? 16 : 24),
                 Text(
-                  '─── [ (c) 2025 CTRL PANEL TEAM // ALL RIGHTS REVERSED ] ───',
+                  isMobile
+                      ? '(c) 2025 CTRL PANEL TEAM'
+                      : '─── [ (c) 2025 CTRL PANEL TEAM // ALL RIGHTS REVERSED ] ───',
                   style: GoogleFonts.shareTechMono(
                     fontSize: 9,
                     color: RetroColors.textDim,
