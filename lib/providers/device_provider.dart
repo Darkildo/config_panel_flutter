@@ -1,0 +1,62 @@
+import 'package:flutter/foundation.dart';
+import '../models/device.dart';
+import '../services/api_service.dart';
+
+class DeviceProvider extends ChangeNotifier {
+  final ApiService _api;
+
+  DeviceProvider(this._api);
+
+  List<Device> _devices = [];
+  bool _isLoading = false;
+  String? _error;
+  bool? _filterActive;
+  String _searchQuery = '';
+
+  List<Device> get devices => _devices;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+  bool? get filterActive => _filterActive;
+  String get searchQuery => _searchQuery;
+
+  void setFilter(bool? isActive) {
+    _filterActive = isActive;
+    notifyListeners();
+    loadDevices();
+  }
+
+  void setSearch(String query) {
+    _searchQuery = query;
+    notifyListeners();
+    loadDevices();
+  }
+
+  Future<void> loadDevices() async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      _devices = await _api.listDevices(
+        ListDevicesRequest(
+          isActive: _filterActive,
+          hostnameSearch: _searchQuery,
+        ),
+      );
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString().replaceFirst('Exception: ', '');
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Device? getDeviceById(int id) {
+    try {
+      return _devices.firstWhere((d) => d.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
+}
