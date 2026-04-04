@@ -9,7 +9,6 @@ class MockApiService implements ApiService {
   final _random = Random();
   int _nextDeviceId = 100;
   int _nextConfigId = 1000;
-  
 
   final List<User> _users = [
     User(id: 1, login: 'admin', createdAt: DateTime(2024, 1, 1)),
@@ -104,10 +103,12 @@ class MockApiService implements ApiService {
   @override
   Future<AuthResponse> register(RegisterRequest request) async {
     await _simulateLatency();
-    if (request.login.isEmpty || request.password.isEmpty)
+    if (request.login.isEmpty || request.password.isEmpty) {
       throw Exception('Login and password are required');
-    if (request.password.length < 4)
+    }
+    if (request.password.length < 4) {
       throw Exception('Password must be at least 4 characters');
+    }
     return AuthResponse(
       token: 'mock_token_${DateTime.now().millisecondsSinceEpoch}',
     );
@@ -116,8 +117,9 @@ class MockApiService implements ApiService {
   @override
   Future<AuthResponse> login(LoginRequest request) async {
     await _simulateLatency();
-    if (request.login.isEmpty || request.password.isEmpty)
+    if (request.login.isEmpty || request.password.isEmpty) {
       throw Exception('Login and password are required');
+    }
     return AuthResponse(
       token: 'mock_token_${DateTime.now().millisecondsSinceEpoch}',
     );

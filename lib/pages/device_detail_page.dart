@@ -523,7 +523,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 ),
                 Switch(
                   value: isActive,
-                  activeColor: RetroColors.neonGreen,
+                  activeThumbColor: RetroColors.neonGreen,
                   inactiveThumbColor: RetroColors.neonRed,
                   onChanged: (v) => setDialogState(() => isActive = v),
                 ),
@@ -540,6 +540,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     }
 
     Future<void> handleSubmit(BuildContext dialogContext) async {
+      final router = Navigator.of(dialogContext);
       if (!formKey.currentState!.validate()) return;
       final success = await context.read<DeviceProvider>().updateDevice(
         id: widget.deviceId,
@@ -549,7 +550,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         isActive: isActive,
       );
       if (success && mounted) {
-        Navigator.pop(dialogContext);
+        router.pop();
         context.read<DeviceProvider>().loadDevices();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
