@@ -457,6 +457,430 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     }
   }
 
+  void _showEditDeviceDialog(BuildContext context, Device device) {
+    final hostnameCtrl = TextEditingController(text: device.hostname);
+    final ipCtrl = TextEditingController(text: device.ip);
+    final locationCtrl = TextEditingController(text: device.location);
+    bool isActive = device.isActive;
+    final formKey = GlobalKey<FormState>();
+
+    void dispose() {
+      hostnameCtrl.dispose();
+      ipCtrl.dispose();
+      locationCtrl.dispose();
+    }
+
+    Widget buildForm(StateSetter setDialogState) {
+      return Form(
+        key: formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              '> Modify device parameters_',
+              style: GoogleFonts.shareTechMono(
+                fontSize: 11,
+                color: RetroColors.textMuted,
+              ),
+            ),
+            const SizedBox(height: 12),
+            RetroTextField(
+              controller: hostnameCtrl,
+              labelText: 'HOSTNAME',
+              hintText: 'e.g. server-01',
+              prefixIcon: Icons.dns,
+              validator: (v) =>
+                  v == null || v.trim().isEmpty ? 'Hostname required' : null,
+            ),
+            const SizedBox(height: 12),
+            RetroTextField(
+              controller: ipCtrl,
+              labelText: 'IP ADDRESS',
+              hintText: 'e.g. 192.168.1.1',
+              prefixIcon: Icons.language,
+              validator: (v) =>
+                  v == null || v.trim().isEmpty ? 'IP required' : null,
+            ),
+            const SizedBox(height: 12),
+            RetroTextField(
+              controller: locationCtrl,
+              labelText: 'LOCATION',
+              hintText: 'e.g. rack-3',
+              prefixIcon: Icons.location_on,
+              validator: (v) =>
+                  v == null || v.trim().isEmpty ? 'Location required' : null,
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Text(
+                  'STATUS:  ',
+                  style: GoogleFonts.shareTechMono(
+                    fontSize: 12,
+                    color: RetroColors.textMuted,
+                  ),
+                ),
+                Switch(
+                  value: isActive,
+                  activeColor: RetroColors.neonGreen,
+                  inactiveThumbColor: RetroColors.neonRed,
+                  onChanged: (v) => setDialogState(() => isActive = v),
+                ),
+                const SizedBox(width: 8),
+                RetroStatusBadge(
+                  label: isActive ? 'ONLINE' : 'OFFLINE',
+                  active: isActive,
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
+
+    Future<void> handleSubmit(BuildContext dialogContext) async {
+      if (!formKey.currentState!.validate()) return;
+      final success = await context.read<DeviceProvider>().updateDevice(
+        id: widget.deviceId,
+        hostname: hostnameCtrl.text.trim(),
+        ip: ipCtrl.text.trim(),
+        location: locationCtrl.text.trim(),
+        isActive: isActive,
+      );
+      if (success && mounted) {
+        Navigator.pop(dialogContext);
+        context.read<DeviceProvider>().loadDevices();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '> Device updated successfully',
+              style: GoogleFonts.shareTechMono(color: RetroColors.neonGreen),
+            ),
+          ),
+        );
+      }
+    }
+
+    if (context.isMobile) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (routeContext) => Scaffold(
+            body: ScanlineOverlay(
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 8,
+                    ),
+                    decoration: const BoxDecoration(
+                      color: RetroColors.surface,
+                      border: Border(
+                        bottom: BorderSide(color: RetroColors.surfaceBorder),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: RetroColors.neonCyan,
+                            size: 20,
+                          ),
+                          onPressed: () {
+                            dispose();
+                            Navigator.pop(routeContext);
+                          },
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'EDIT DEVICE',
+                          style: GoogleFonts.vt323(
+                            fontSize: 18,
+                            color: RetroColors.neonGreen,
+                            letterSpacing: 2,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(12),
+                      child: RetroWindow(
+                        title: 'EDIT DEVICE #${widget.deviceId}',
+                        child: StatefulBuilder(
+                          builder: (ctx, setDialogState) => Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              buildForm(setDialogState),
+                              const SizedBox(height: 16),
+                              RetroButton(
+                                label: '[ SAVE CHANGES ]',
+                                icon: Icons.save,
+                                expanded: true,
+                                onPressed: () => handleSubmit(routeContext),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          title: Text(
+            'EDIT DEVICE #${widget.deviceId}',
+            style: GoogleFonts.vt323(fontSize: 20, color: RetroColors.neonCyan),
+          ),
+          content: SizedBox(
+            width: 400,
+            child: StatefulBuilder(
+              builder: (ctx, setDialogState) => buildForm(setDialogState),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                dispose();
+                Navigator.pop(dialogContext);
+              },
+              child: Text(
+                'CANCEL',
+                style: GoogleFonts.shareTechMono(color: RetroColors.textMuted),
+              ),
+            ),
+            RetroButton(
+              label: 'SAVE',
+              icon: Icons.save,
+              accentColor: RetroColors.neonCyan,
+              onPressed: () => handleSubmit(dialogContext),
+            ),
+          ],
+        ),
+      ).then((_) => dispose());
+    }
+  }
+
+  Future<void> _showDeleteDeviceDialog(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(
+          'DELETE DEVICE #${widget.deviceId}?',
+          style: GoogleFonts.vt323(fontSize: 20, color: RetroColors.neonRed),
+        ),
+        content: Text(
+          'This action is irreversible. All configurations associated with this device will also be deleted. Continue?',
+          style: GoogleFonts.shareTechMono(
+            fontSize: 13,
+            color: RetroColors.neonRed,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(
+              'CANCEL',
+              style: GoogleFonts.shareTechMono(color: RetroColors.textMuted),
+            ),
+          ),
+          RetroButton(
+            label: 'DELETE',
+            icon: Icons.delete_outline,
+            accentColor: RetroColors.neonRed,
+            onPressed: () => Navigator.pop(ctx, true),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && mounted) {
+      final success = await context.read<DeviceProvider>().deleteDevice(
+        widget.deviceId,
+      );
+      if (success && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '> Device deleted successfully',
+              style: GoogleFonts.shareTechMono(color: RetroColors.neonGreen),
+            ),
+          ),
+        );
+        widget.onBack();
+      }
+    }
+  }
+
+  void _showEditConfigDialog(
+    BuildContext context,
+    DeviceConfig config,
+    ConfigProvider configProvider,
+  ) {
+    final versionCtrl = TextEditingController(text: config.version);
+    final contentCtrl = TextEditingController(text: config.content);
+    final formKey = GlobalKey<FormState>();
+
+    void dispose() {
+      versionCtrl.dispose();
+      contentCtrl.dispose();
+    }
+
+    Widget buildForm() {
+      return Form(
+        key: formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              '> Modify configuration parameters_',
+              style: GoogleFonts.shareTechMono(
+                fontSize: 11,
+                color: RetroColors.textMuted,
+              ),
+            ),
+            const SizedBox(height: 12),
+            RetroTextField(
+              controller: versionCtrl,
+              labelText: 'VERSION',
+              hintText: 'e.g. v1.3.0',
+              prefixIcon: Icons.tag,
+              validator: (v) =>
+                  v == null || v.trim().isEmpty ? 'Version required' : null,
+            ),
+            const SizedBox(height: 12),
+            RetroTextField(
+              controller: contentCtrl,
+              labelText: 'CONFIGURATION CONTENT',
+              hintText: '# paste config here...',
+              maxLines: context.isMobile ? 5 : 8,
+              validator: (v) =>
+                  v == null || v.trim().isEmpty ? 'Content required' : null,
+            ),
+          ],
+        ),
+      );
+    }
+
+    Future<void> handleSubmit(BuildContext dialogContext) async {
+      if (!formKey.currentState!.validate()) return;
+      final success = await configProvider.updateConfig(
+        configId: config.id,
+        deviceId: widget.deviceId,
+        version: versionCtrl.text.trim(),
+        content: contentCtrl.text,
+      );
+      if (success && mounted) {
+        Navigator.pop(dialogContext);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '> Config ${config.version} updated successfully',
+              style: GoogleFonts.shareTechMono(color: RetroColors.neonGreen),
+            ),
+          ),
+        );
+      }
+    }
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(
+          'EDIT CONFIG ${config.version}',
+          style: GoogleFonts.vt323(fontSize: 20, color: RetroColors.neonCyan),
+        ),
+        content: SizedBox(width: 500, child: buildForm()),
+        actions: [
+          TextButton(
+            onPressed: () {
+              dispose();
+              Navigator.pop(dialogContext);
+            },
+            child: Text(
+              'CANCEL',
+              style: GoogleFonts.shareTechMono(color: RetroColors.textMuted),
+            ),
+          ),
+          RetroButton(
+            label: 'SAVE',
+            icon: Icons.save,
+            accentColor: RetroColors.neonCyan,
+            onPressed: () => handleSubmit(dialogContext),
+          ),
+        ],
+      ),
+    ).then((_) => dispose());
+  }
+
+  Future<void> _showDeleteConfigDialog(
+    BuildContext context,
+    DeviceConfig config,
+    ConfigProvider configProvider,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(
+          'DELETE CONFIG ${config.version}?',
+          style: GoogleFonts.vt323(fontSize: 20, color: RetroColors.neonRed),
+        ),
+        content: Text(
+          'This will permanently delete configuration ${config.version}. Continue?',
+          style: GoogleFonts.shareTechMono(
+            fontSize: 13,
+            color: RetroColors.neonRed,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(
+              'CANCEL',
+              style: GoogleFonts.shareTechMono(color: RetroColors.textMuted),
+            ),
+          ),
+          RetroButton(
+            label: 'DELETE',
+            icon: Icons.delete_outline,
+            accentColor: RetroColors.neonRed,
+            onPressed: () => Navigator.pop(ctx, true),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && mounted) {
+      final success = await configProvider.deleteConfig(
+        config.id,
+        widget.deviceId,
+      );
+      if (success && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '> Config ${config.version} deleted',
+              style: GoogleFonts.shareTechMono(color: RetroColors.neonGreen),
+            ),
+          ),
+        );
+      }
+    }
+  }
+
   Widget _buildConfigHistory(ConfigProvider configProvider) {
     return RetroWindow(
       title: 'CONFIG HISTORY // ${configProvider.configs.length} VERSIONS',
@@ -499,6 +923,10 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                       ? null
                       : () => _handleApply(configProvider, config),
                   isApplying: configProvider.isApplying,
+                  onEdit: () =>
+                      _showEditConfigDialog(context, config, configProvider),
+                  onDelete: () =>
+                      _showDeleteConfigDialog(context, config, configProvider),
                 );
               },
             ),
@@ -559,6 +987,8 @@ class _ConfigTile extends StatelessWidget {
   final VoidCallback onToggle;
   final VoidCallback? onApply;
   final bool isApplying;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
 
   const _ConfigTile({
     required this.config,
@@ -567,6 +997,8 @@ class _ConfigTile extends StatelessWidget {
     required this.onToggle,
     this.onApply,
     required this.isApplying,
+    required this.onEdit,
+    required this.onDelete,
   });
 
   @override
@@ -692,17 +1124,47 @@ class _ConfigTile extends StatelessWidget {
               color: RetroColors.neonGreen.withValues(alpha: 0.6),
             ),
           ),
-        if (!config.isApplied) ...[
-          const SizedBox(height: 6),
-          RetroButton(
-            label: 'APPLY',
-            icon: Icons.check_circle_outline,
-            accentColor: RetroColors.neonOrange,
-            isLoading: isApplying,
-            onPressed: onApply,
-            expanded: true,
-          ),
-        ],
+        const SizedBox(height: 6),
+        Row(
+          children: [
+            Expanded(
+              child: !config.isApplied
+                  ? RetroButton(
+                      label: 'APPLY',
+                      icon: Icons.check_circle_outline,
+                      accentColor: RetroColors.neonOrange,
+                      isLoading: isApplying,
+                      onPressed: onApply,
+                      expanded: true,
+                    )
+                  : const SizedBox.shrink(),
+            ),
+            const SizedBox(width: 4),
+            IconButton(
+              icon: const Icon(
+                Icons.edit,
+                color: RetroColors.neonCyan,
+                size: 18,
+              ),
+              tooltip: 'Edit Config',
+              onPressed: onEdit,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+            ),
+            const SizedBox(width: 4),
+            IconButton(
+              icon: const Icon(
+                Icons.delete_outline,
+                color: RetroColors.neonRed,
+                size: 18,
+              ),
+              tooltip: 'Delete Config',
+              onPressed: onDelete,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -762,6 +1224,26 @@ class _ConfigTile extends StatelessWidget {
             onPressed: onApply,
           ),
         ],
+        const SizedBox(width: 8),
+        IconButton(
+          icon: const Icon(Icons.edit, color: RetroColors.neonCyan, size: 18),
+          tooltip: 'Edit Config',
+          onPressed: onEdit,
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(),
+        ),
+        const SizedBox(width: 4),
+        IconButton(
+          icon: const Icon(
+            Icons.delete_outline,
+            color: RetroColors.neonRed,
+            size: 18,
+          ),
+          tooltip: 'Delete Config',
+          onPressed: onDelete,
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(),
+        ),
       ],
     );
   }

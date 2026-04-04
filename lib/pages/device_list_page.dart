@@ -16,8 +16,9 @@ import '../widgets/scanline_overlay.dart';
 
 class DeviceListPage extends StatefulWidget {
   final void Function(int deviceId) onDeviceTap;
+  final VoidCallback? onUsersTap;
 
-  const DeviceListPage({super.key, required this.onDeviceTap});
+  const DeviceListPage({super.key, required this.onDeviceTap, this.onUsersTap});
 
   @override
   State<DeviceListPage> createState() => _DeviceListPageState();
@@ -110,6 +111,7 @@ class _DeviceListPageState extends State<DeviceListPage> {
       ),
     );
   }
+
   Widget _buildTopBar(BuildContext context) {
     final isMobile = context.isMobile;
 
@@ -143,6 +145,25 @@ class _DeviceListPageState extends State<DeviceListPage> {
             ),
             const SizedBox(width: 20),
           ],
+          if (widget.onUsersTap != null) ...[
+            isMobile
+                ? IconButton(
+                    icon: const Icon(
+                      Icons.people_outline,
+                      color: RetroColors.neonCyan,
+                    ),
+                    iconSize: 20,
+                    tooltip: 'Users',
+                    onPressed: widget.onUsersTap,
+                  )
+                : RetroButton(
+                    label: 'USERS',
+                    icon: Icons.people_outline,
+                    accentColor: RetroColors.neonCyan,
+                    onPressed: widget.onUsersTap,
+                  ),
+            SizedBox(width: isMobile ? 4 : 8),
+          ],
           isMobile
               ? IconButton(
                   icon: const Icon(Icons.logout, color: RetroColors.neonRed),
@@ -160,6 +181,7 @@ class _DeviceListPageState extends State<DeviceListPage> {
       ),
     );
   }
+
   Widget _buildFilters(BuildContext context, DeviceProvider provider) {
     final isMobile = context.isMobile;
     final padding = isMobile ? 8.0 : 12.0;
@@ -248,6 +270,7 @@ class _DeviceListPageState extends State<DeviceListPage> {
       ),
     );
   }
+
   Widget _buildLoading() {
     return Center(
       child: Column(
@@ -306,6 +329,7 @@ class _DeviceListPageState extends State<DeviceListPage> {
       ),
     );
   }
+
   Widget _buildTable(
     BuildContext context,
     DeviceProvider provider,
@@ -368,6 +392,7 @@ class _DeviceListPageState extends State<DeviceListPage> {
       },
     );
   }
+
   Widget _buildCardList(
     BuildContext context,
     DeviceProvider provider,
@@ -387,6 +412,7 @@ class _DeviceListPageState extends State<DeviceListPage> {
     );
   }
 }
+
 class _DeviceCard extends StatelessWidget {
   final Device device;
   final DateFormat dateFormat;
@@ -503,6 +529,7 @@ class _DeviceCard extends StatelessWidget {
     );
   }
 }
+
 class _FilterChipRow extends StatelessWidget {
   final bool? currentFilter;
   final void Function(bool?) onChanged;
@@ -578,6 +605,7 @@ class _FilterChipRow extends StatelessWidget {
     );
   }
 }
+
 class _AddDeviceFormBody extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController hostnameController;
@@ -689,6 +717,7 @@ class _AddDeviceFormBody extends StatelessWidget {
     );
   }
 }
+
 class _ActiveToggle extends StatelessWidget {
   final bool isActive;
   final ValueChanged<bool> onChanged;
@@ -758,6 +787,7 @@ class _ActiveToggle extends StatelessWidget {
     );
   }
 }
+
 class _AddDeviceDialog extends StatefulWidget {
   const _AddDeviceDialog();
 
@@ -841,6 +871,7 @@ class _AddDeviceDialogState extends State<_AddDeviceDialog> {
     );
   }
 }
+
 class _AddDeviceFullScreenPage extends StatefulWidget {
   const _AddDeviceFullScreenPage();
 

@@ -4,6 +4,7 @@ import '../pages/device_detail_page.dart';
 import '../pages/device_list_page.dart';
 import '../pages/login_page.dart';
 import '../pages/register_page.dart';
+import '../pages/user_list_page.dart';
 import '../providers/auth_provider.dart';
 
 class AppRouter {
@@ -37,8 +38,10 @@ class AppRouter {
       ),
       GoRoute(
         path: '/devices',
-        builder: (context, state) =>
-            DeviceListPage(onDeviceTap: (id) => context.go('/devices/$id')),
+        builder: (context, state) => DeviceListPage(
+          onDeviceTap: (id) => context.go('/devices/$id'),
+          onUsersTap: () => context.go('/users'),
+        ),
       ),
       GoRoute(
         path: '/devices/:id',
@@ -49,6 +52,11 @@ class AppRouter {
             onBack: () => context.go('/devices'),
           );
         },
+      ),
+      GoRoute(
+        path: '/users',
+        builder: (context, state) =>
+            UserListPage(onBack: () => context.go('/devices')),
       ),
     ],
   );
