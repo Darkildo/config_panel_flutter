@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
 import 'providers/config_provider.dart';
 import 'providers/device_provider.dart';
+import 'providers/user_provider.dart';
 import 'router/app_router.dart';
 import 'services/api_service.dart';
 import 'services/app_config.dart';
@@ -63,6 +64,7 @@ class ConfigPanelApp extends StatefulWidget {
 class _ConfigPanelAppState extends State<ConfigPanelApp> {
   late final DeviceProvider _deviceProvider;
   late final ConfigProvider _configProvider;
+  late final UserProvider _userProvider;
   late final AppRouter _appRouter;
 
   @override
@@ -70,6 +72,7 @@ class _ConfigPanelAppState extends State<ConfigPanelApp> {
     super.initState();
     _deviceProvider = DeviceProvider(widget.apiService);
     _configProvider = ConfigProvider(widget.apiService);
+    _userProvider = UserProvider(widget.apiService);
     _appRouter = AppRouter(widget.authProvider);
   }
 
@@ -80,6 +83,7 @@ class _ConfigPanelAppState extends State<ConfigPanelApp> {
         ChangeNotifierProvider.value(value: widget.authProvider),
         ChangeNotifierProvider.value(value: _deviceProvider),
         ChangeNotifierProvider.value(value: _configProvider),
+        ChangeNotifierProvider.value(value: _userProvider),
         Provider<ApiService>.value(value: widget.apiService),
       ],
       child: MaterialApp.router(
