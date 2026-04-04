@@ -148,17 +148,14 @@ class _DeviceListPageState extends State<DeviceListPage> {
           if (widget.onUsersTap != null) ...[
             isMobile
                 ? IconButton(
-                    icon: const Icon(
-                      Icons.people_outline,
-                      color: RetroColors.neonCyan,
-                    ),
+                    icon: const Icon(Icons.people, color: RetroColors.neonCyan),
                     iconSize: 20,
                     tooltip: 'Users',
                     onPressed: widget.onUsersTap,
                   )
                 : RetroButton(
                     label: 'USERS',
-                    icon: Icons.people_outline,
+                    icon: Icons.people,
                     accentColor: RetroColors.neonCyan,
                     onPressed: widget.onUsersTap,
                   ),

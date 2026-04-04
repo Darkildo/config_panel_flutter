@@ -106,7 +106,8 @@ class AuthProvider extends ChangeNotifier {
     _expiryTimer = null;
 
     final remaining = TokenStorage.remainingLifetime(token);
-    if (remaining == null || remaining.isNegative) {
+    if (remaining == null) return;
+    if (remaining.isNegative) {
       logout();
       return;
     }

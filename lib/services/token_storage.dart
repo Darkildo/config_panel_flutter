@@ -37,7 +37,7 @@ class TokenStorage {
       if (payload == null) return true;
 
       final exp = payload['exp'];
-      if (exp == null || exp is! num) return true;
+      if (exp == null || exp is! num) return false;
 
       final expiryDate = DateTime.fromMillisecondsSinceEpoch(
         exp.toInt() * 1000,

@@ -225,7 +225,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
             isMobile
                 ? IconButton(
                     icon: const Icon(
-                      Icons.delete_outline,
+                      Icons.delete,
                       color: RetroColors.neonRed,
                       size: 20,
                     ),
@@ -236,7 +236,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                   )
                 : RetroButton(
                     label: 'DELETE',
-                    icon: Icons.delete_outline,
+                    icon: Icons.delete,
                     accentColor: RetroColors.neonRed,
                     onPressed: () => _showDeleteDeviceDialog(context),
                   ),
@@ -699,7 +699,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           ),
           RetroButton(
             label: 'DELETE',
-            icon: Icons.delete_outline,
+            icon: Icons.delete,
             accentColor: RetroColors.neonRed,
             onPressed: () => Navigator.pop(ctx, true),
           ),
@@ -856,7 +856,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           ),
           RetroButton(
             label: 'DELETE',
-            icon: Icons.delete_outline,
+            icon: Icons.delete,
             accentColor: RetroColors.neonRed,
             onPressed: () => Navigator.pop(ctx, true),
           ),
@@ -1145,7 +1145,7 @@ class _ConfigTile extends StatelessWidget {
               icon: const Icon(
                 Icons.edit,
                 color: RetroColors.neonCyan,
-                size: 18,
+                size: 20,
               ),
               tooltip: 'Edit Config',
               onPressed: onEdit,
@@ -1155,9 +1155,9 @@ class _ConfigTile extends StatelessWidget {
             const SizedBox(width: 4),
             IconButton(
               icon: const Icon(
-                Icons.delete_outline,
+                Icons.delete,
                 color: RetroColors.neonRed,
-                size: 18,
+                size: 20,
               ),
               tooltip: 'Delete Config',
               onPressed: onDelete,
@@ -1176,7 +1176,7 @@ class _ConfigTile extends StatelessWidget {
         Icon(
           isExpanded ? Icons.expand_less : Icons.expand_more,
           color: RetroColors.neonCyan,
-          size: 18,
+          size: 20,
         ),
         const SizedBox(width: 8),
         Text(
@@ -1227,7 +1227,7 @@ class _ConfigTile extends StatelessWidget {
         ],
         const SizedBox(width: 8),
         IconButton(
-          icon: const Icon(Icons.edit, color: RetroColors.neonCyan, size: 18),
+          icon: const Icon(Icons.edit, color: RetroColors.neonCyan, size: 20),
           tooltip: 'Edit Config',
           onPressed: onEdit,
           padding: EdgeInsets.zero,
@@ -1236,9 +1236,9 @@ class _ConfigTile extends StatelessWidget {
         const SizedBox(width: 4),
         IconButton(
           icon: const Icon(
-            Icons.delete_outline,
+            Icons.delete,
             color: RetroColors.neonRed,
-            size: 18,
+            size: 20,
           ),
           tooltip: 'Delete Config',
           onPressed: onDelete,
