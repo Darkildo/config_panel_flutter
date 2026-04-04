@@ -67,7 +67,6 @@ class ConfigProvider extends ChangeNotifier {
       );
       _isSaving = false;
       notifyListeners();
-      // Reload configs
       await loadConfigs(deviceId);
       return true;
     } catch (e) {
@@ -87,7 +86,6 @@ class ConfigProvider extends ChangeNotifier {
       await _api.applyConfig(configId);
       _isApplying = false;
       notifyListeners();
-      // Reload configs to reflect the change
       await loadConfigs(deviceId);
       return true;
     } catch (e) {

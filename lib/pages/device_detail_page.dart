@@ -73,9 +73,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       ),
     );
   }
-
-  // ── WIDE LAYOUT (tablet/desktop): side-by-side ──
-
   Widget _buildWideLayout(Device? device, ConfigProvider configProvider) {
     return Padding(
       padding: EdgeInsets.all(context.isDesktop ? 16 : 12),
@@ -100,9 +97,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       ),
     );
   }
-
-  // ── NARROW LAYOUT (mobile): single column with tabs ──
-
   Widget _buildNarrowLayout(Device? device, ConfigProvider configProvider) {
     return DefaultTabController(
       length: 3,
@@ -125,17 +119,14 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           Expanded(
             child: TabBarView(
               children: [
-                // Tab 1: Device info
                 SingleChildScrollView(
                   padding: const EdgeInsets.all(8),
                   child: _buildDeviceInfo(device),
                 ),
-                // Tab 2: Config history
                 Padding(
                   padding: const EdgeInsets.all(8),
                   child: _buildConfigHistory(configProvider),
                 ),
-                // Tab 3: Upload form
                 SingleChildScrollView(
                   padding: const EdgeInsets.all(8),
                   child: _buildUploadForm(configProvider),
@@ -147,9 +138,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       ),
     );
   }
-
-  // ── TOP BAR ──
-
   Widget _buildTopBar(BuildContext context, Device? device) {
     final isMobile = context.isMobile;
 
@@ -161,7 +149,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       ),
       child: Row(
         children: [
-          // Back button: icon-only on mobile
           isMobile
               ? IconButton(
                   icon: const Icon(
@@ -182,7 +169,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 ),
           SizedBox(width: isMobile ? 8 : 16),
 
-          // Device title
           Expanded(
             child: Row(
               children: [
@@ -213,7 +199,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
             ),
           ),
 
-          // Logout
           isMobile
               ? IconButton(
                   icon: const Icon(
@@ -236,9 +221,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       ),
     );
   }
-
-  // ── DEVICE INFO ──
-
   Widget _buildDeviceInfo(Device? device) {
     if (device == null) {
       return RetroWindow(
@@ -341,9 +323,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
             ),
     );
   }
-
-  // ── UPLOAD FORM ──
-
   Widget _buildUploadForm(ConfigProvider configProvider) {
     return RetroWindow(
       title: 'UPLOAD NEW CONFIG',
@@ -432,9 +411,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       );
     }
   }
-
-  // ── CONFIG HISTORY ──
-
   Widget _buildConfigHistory(ConfigProvider configProvider) {
     return RetroWindow(
       title: 'CONFIG HISTORY // ${configProvider.configs.length} VERSIONS',
@@ -529,11 +505,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     }
   }
 }
-
-// ══════════════════════════════════════════════════════════════
-//  CONFIG TILE — responsive for mobile / desktop
-// ══════════════════════════════════════════════════════════════
-
 class _ConfigTile extends StatelessWidget {
   final DeviceConfig config;
   final bool isExpanded;
@@ -558,7 +529,6 @@ class _ConfigTile extends StatelessWidget {
     return Column(
       crossAxisAlignment: .stretch,
       children: [
-        // ── Header ──
         InkWell(
           onTap: onToggle,
           child: Padding(
@@ -572,7 +542,6 @@ class _ConfigTile extends StatelessWidget {
           ),
         ),
 
-        // ── Expanded content ──
         if (isExpanded)
           Container(
             margin: EdgeInsets.fromLTRB(
@@ -623,14 +592,10 @@ class _ConfigTile extends StatelessWidget {
       ],
     );
   }
-
-  // ── MOBILE: stacked layout ──
-
   Widget _buildMobileHeader(DateFormat dateFormat) {
     return Column(
       crossAxisAlignment: .start,
       children: [
-        // Row 1: expand icon + version + status
         Row(
           children: [
             Icon(
@@ -664,7 +629,6 @@ class _ConfigTile extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 4),
-        // Row 2: dates
         Text(
           'created: ${dateFormat.format(config.createdAt)}',
           style: GoogleFonts.shareTechMono(
@@ -680,7 +644,6 @@ class _ConfigTile extends StatelessWidget {
               color: RetroColors.neonGreen.withValues(alpha: 0.6),
             ),
           ),
-        // Row 3: apply button if needed
         if (!config.isApplied) ...[
           const SizedBox(height: 6),
           RetroButton(
@@ -695,9 +658,6 @@ class _ConfigTile extends StatelessWidget {
       ],
     );
   }
-
-  // ── DESKTOP: single-row layout ──
-
   Widget _buildDesktopHeader(DateFormat dateFormat) {
     return Row(
       children: [

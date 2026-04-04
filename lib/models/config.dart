@@ -1,4 +1,3 @@
-/// Config model matching proto/v1/config.proto — ConfigResponse
 class DeviceConfig {
   final int id;
   final int deviceId;
@@ -52,7 +51,6 @@ class DeviceConfig {
   };
 }
 
-/// Matches CreateConfigRequest
 class CreateConfigRequest {
   final int deviceId;
   final String version;
@@ -71,7 +69,6 @@ class CreateConfigRequest {
   };
 }
 
-/// Matches ListConfigsRequest
 class ListConfigsRequest {
   final int deviceId;
   final int page;
@@ -84,7 +81,6 @@ class ListConfigsRequest {
   });
 }
 
-/// Matches ListConfigsResponse
 class ListConfigsResponse {
   final List<DeviceConfig> configs;
   final int total;
@@ -99,7 +95,6 @@ class ListConfigsResponse {
   });
 }
 
-/// Matches ApplyConfigResponse
 class ApplyConfigResponse {
   final bool success;
   final DateTime appliedAt;

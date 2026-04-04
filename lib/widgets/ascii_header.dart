@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/retro_theme.dart';
 
-/// ASCII art header — classic keygen vibes.
 class AsciiHeader extends StatelessWidget {
   const AsciiHeader({super.key});
 

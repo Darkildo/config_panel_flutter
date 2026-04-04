@@ -1,11 +1,5 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-/// Application configuration for the gRPC-Web backend connection.
-///
-/// Resolution order (first non-empty wins):
-///   1. `.env` file (runtime, loaded as Flutter asset)
-///   2. `--dart-define` (compile-time)
-///   3. Built-in defaults (localhost:8080, no TLS)
 class AppConfig {
   final String host;
   final int port;
@@ -17,18 +11,12 @@ class AppConfig {
     this.useTls = false,
   });
 
-  /// Load `.env` asset. Call once before [fromEnvironment].
-  ///
-  /// Silently continues if the file is missing (falls back to --dart-define).
   static Future<void> loadDotEnv() async {
     try {
       await dotenv.load(fileName: '.env');
-    } catch (_) {
-      // .env not bundled — that's fine, --dart-define or defaults will be used
-    }
+    } catch (_) {}
   }
 
-  /// Build config with priority: .env > --dart-define > defaults.
   factory AppConfig.fromEnvironment() {
     const dartDefineHost = String.fromEnvironment(
       'GRPC_HOST',
@@ -53,9 +41,6 @@ class AppConfig {
   @override
   String toString() => 'AppConfig(${useTls ? "https" : "http"}://$host:$port)';
 
-  // ── Dotenv safe accessor ──
-
-  /// Returns null if dotenv is not initialized (e.g. in tests).
   static String? _dotenvGet(String key) {
     try {
       return dotenv.maybeGet(key);
@@ -63,8 +48,6 @@ class AppConfig {
       return null;
     }
   }
-
-  // ── Resolution helpers ──
 
   static String? _firstNonEmpty(List<String?> values) {
     for (final v in values) {

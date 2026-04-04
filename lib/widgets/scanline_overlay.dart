@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// CRT-style scanline overlay for that authentic retro look.
 class ScanlineOverlay extends StatelessWidget {
   final Widget child;
   final double opacity;

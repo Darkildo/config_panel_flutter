@@ -44,7 +44,6 @@ class _DeviceListPageState extends State<DeviceListPage> {
     final isMobile = context.isMobile;
 
     if (isMobile) {
-      // Mobile: full-screen modal page
       Navigator.of(context).push(
         MaterialPageRoute<bool>(
           fullscreenDialog: true,
@@ -55,7 +54,6 @@ class _DeviceListPageState extends State<DeviceListPage> {
         ),
       );
     } else {
-      // Tablet/Desktop: centered dialog
       showDialog<bool>(
         context: context,
         builder: (_) => ChangeNotifierProvider.value(
@@ -112,9 +110,6 @@ class _DeviceListPageState extends State<DeviceListPage> {
       ),
     );
   }
-
-  // ── TOP BAR ──
-
   Widget _buildTopBar(BuildContext context) {
     final isMobile = context.isMobile;
 
@@ -165,9 +160,6 @@ class _DeviceListPageState extends State<DeviceListPage> {
       ),
     );
   }
-
-  // ── FILTERS ──
-
   Widget _buildFilters(BuildContext context, DeviceProvider provider) {
     final isMobile = context.isMobile;
     final padding = isMobile ? 8.0 : 12.0;
@@ -256,9 +248,6 @@ class _DeviceListPageState extends State<DeviceListPage> {
       ),
     );
   }
-
-  // ── STATES ──
-
   Widget _buildLoading() {
     return Center(
       child: Column(
@@ -317,9 +306,6 @@ class _DeviceListPageState extends State<DeviceListPage> {
       ),
     );
   }
-
-  // ── DESKTOP TABLE ──
-
   Widget _buildTable(
     BuildContext context,
     DeviceProvider provider,
@@ -382,9 +368,6 @@ class _DeviceListPageState extends State<DeviceListPage> {
       },
     );
   }
-
-  // ── MOBILE CARD LIST ──
-
   Widget _buildCardList(
     BuildContext context,
     DeviceProvider provider,
@@ -404,11 +387,6 @@ class _DeviceListPageState extends State<DeviceListPage> {
     );
   }
 }
-
-// ══════════════════════════════════════════════════════════════
-//  MOBILE DEVICE CARD
-// ══════════════════════════════════════════════════════════════
-
 class _DeviceCard extends StatelessWidget {
   final Device device;
   final DateFormat dateFormat;
@@ -525,11 +503,6 @@ class _DeviceCard extends StatelessWidget {
     );
   }
 }
-
-// ══════════════════════════════════════════════════════════════
-//  FILTER CHIPS
-// ══════════════════════════════════════════════════════════════
-
 class _FilterChipRow extends StatelessWidget {
   final bool? currentFilter;
   final void Function(bool?) onChanged;
@@ -605,11 +578,6 @@ class _FilterChipRow extends StatelessWidget {
     );
   }
 }
-
-// ══════════════════════════════════════════════════════════════
-//  ADD DEVICE — SHARED FORM BODY
-// ══════════════════════════════════════════════════════════════
-
 class _AddDeviceFormBody extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController hostnameController;
@@ -681,7 +649,6 @@ class _AddDeviceFormBody extends StatelessWidget {
           ),
           SizedBox(height: spacing),
 
-          // ── Active toggle ──
           _ActiveToggle(
             isActive: isActive,
             onChanged: onActiveChanged,
@@ -690,7 +657,6 @@ class _AddDeviceFormBody extends StatelessWidget {
 
           SizedBox(height: spacing),
 
-          // ── Error ──
           if (error != null) ...[
             Container(
               padding: const EdgeInsets.all(8),
@@ -711,7 +677,6 @@ class _AddDeviceFormBody extends StatelessWidget {
             ),
           ],
 
-          // ── Save button ──
           RetroButton(
             label: '[ CREATE DEVICE ]',
             icon: Icons.add_circle_outline,
@@ -724,11 +689,6 @@ class _AddDeviceFormBody extends StatelessWidget {
     );
   }
 }
-
-// ══════════════════════════════════════════════════════════════
-//  ACTIVE TOGGLE — retro-styled status switch
-// ══════════════════════════════════════════════════════════════
-
 class _ActiveToggle extends StatelessWidget {
   final bool isActive;
   final ValueChanged<bool> onChanged;
@@ -798,11 +758,6 @@ class _ActiveToggle extends StatelessWidget {
     );
   }
 }
-
-// ══════════════════════════════════════════════════════════════
-//  ADD DEVICE DIALOG — tablet / desktop
-// ══════════════════════════════════════════════════════════════
-
 class _AddDeviceDialog extends StatefulWidget {
   const _AddDeviceDialog();
 
@@ -886,11 +841,6 @@ class _AddDeviceDialogState extends State<_AddDeviceDialog> {
     );
   }
 }
-
-// ══════════════════════════════════════════════════════════════
-//  ADD DEVICE FULL-SCREEN PAGE — mobile
-// ══════════════════════════════════════════════════════════════
-
 class _AddDeviceFullScreenPage extends StatefulWidget {
   const _AddDeviceFullScreenPage();
 
@@ -938,7 +888,6 @@ class _AddDeviceFullScreenPageState extends State<_AddDeviceFullScreenPage> {
       body: ScanlineOverlay(
         child: Column(
           children: [
-            // ── Top bar ──
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               decoration: const BoxDecoration(
@@ -973,7 +922,6 @@ class _AddDeviceFullScreenPageState extends State<_AddDeviceFullScreenPage> {
               ),
             ),
 
-            // ── Form ──
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(8),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/retro_theme.dart';
 
-/// Classic Win9x-style window frame with title bar, used as a panel wrapper.
 class RetroWindow extends StatelessWidget {
   final String title;
   final Widget child;
@@ -42,7 +41,6 @@ class RetroWindow extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: .stretch,
         children: [
-          // ── Title bar ──
           Container(
             decoration: const BoxDecoration(
               gradient: RetroColors.titleBarGradient,
@@ -50,14 +48,12 @@ class RetroWindow extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: Row(
               children: [
-                // Icon dots
                 _TitleBarDot(color: RetroColors.neonRed),
                 const SizedBox(width: 4),
                 _TitleBarDot(color: RetroColors.neonYellow),
                 const SizedBox(width: 4),
                 _TitleBarDot(color: RetroColors.neonGreen),
                 const SizedBox(width: 10),
-                // Title
                 Expanded(
                   child: Text(
                     title,
@@ -73,7 +69,6 @@ class RetroWindow extends StatelessWidget {
               ],
             ),
           ),
-          // ── Content ──
           Flexible(
             child: Padding(
               padding: padding ?? const EdgeInsets.all(16),

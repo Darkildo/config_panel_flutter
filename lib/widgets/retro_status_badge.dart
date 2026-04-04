@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/retro_theme.dart';
 
-/// Small badge with blinking dot — used for online/offline, applied/pending.
 class RetroStatusBadge extends StatelessWidget {
   final String label;
   final bool active;

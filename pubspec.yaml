@@ -18,6 +18,7 @@ dependencies:
   fixnum: ^1.1.0
   intl: ^0.20.2
   flutter_dotenv: ^5.2.1
+  flutter_secure_storage: ^10.0.0
 
 dev_dependencies:
   flutter_test:

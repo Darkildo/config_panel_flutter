@@ -10,10 +10,6 @@ import '../models/device.dart';
 import 'api_service.dart';
 import 'app_config.dart';
 
-/// gRPC-Web implementation of [ApiService].
-///
-/// Connects to the Go backend via gRPC-Web (HTTP/1.1 compatible,
-/// works in browsers and on mobile).
 class GrpcApiService implements ApiService {
   final AppConfig config;
 
@@ -22,7 +18,6 @@ class GrpcApiService implements ApiService {
   late final pb_device.DeviceServiceClient _deviceClient;
   late final pb_config.ConfigServiceClient _configClient;
 
-  /// Auth token received after login/register, used for subsequent calls.
   String? _token;
 
   GrpcApiService({required this.config}) {
@@ -37,17 +32,18 @@ class GrpcApiService implements ApiService {
     _configClient = pb_config.ConfigServiceClient(_channel);
   }
 
-  /// Build [CallOptions] with the auth token if available.
   CallOptions? get _callOptions {
     if (_token == null) return null;
     return CallOptions(metadata: {'authorization': 'Bearer $_token'});
   }
 
+  void setToken(String? token) {
+    _token = token;
+  }
+
   void dispose() {
     _channel.shutdown();
   }
-
-  // ── Auth ──
 
   @override
   Future<AuthResponse> register(RegisterRequest request) async {
@@ -77,8 +73,6 @@ class GrpcApiService implements ApiService {
       throw Exception(e.message ?? 'Login failed');
     }
   }
-
-  // ── Devices ──
 
   @override
   Future<Device> createDevice(CreateDeviceRequest request) async {
@@ -117,8 +111,6 @@ class GrpcApiService implements ApiService {
       throw Exception(e.message ?? 'Failed to list devices');
     }
   }
-
-  // ── Configs ──
 
   @override
   Future<DeviceConfig> createConfig(CreateConfigRequest request) async {
@@ -174,8 +166,6 @@ class GrpcApiService implements ApiService {
       throw Exception(e.message ?? 'Failed to apply config');
     }
   }
-
-  // ── Mappers: protobuf -> domain models ──
 
   Device _mapDevice(pb_device.DeviceResponse pb) {
     return Device(

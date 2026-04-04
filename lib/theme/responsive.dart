@@ -1,15 +1,7 @@
 import 'package:flutter/material.dart';
 
-/// ══════════════════════════════════════════════════════════
-///  RESPONSIVE BREAKPOINTS & HELPERS
-/// ══════════════════════════════════════════════════════════
 ///
-/// Mobile:   < 600
-/// Tablet:   600 – 1023
-/// Desktop:  >= 1024
 
-/// Minimum size below which the app should not compress further.
-/// The content area will scroll if the viewport is smaller.
 class AppConstraints {
   AppConstraints._();
 
@@ -48,12 +40,10 @@ class Breakpoints {
   static bool isDesktop(BuildContext context) =>
       MediaQuery.sizeOf(context).width >= tablet;
 
-  /// True for tablet + desktop (wide enough for side-by-side layouts).
   static bool isWide(BuildContext context) =>
       MediaQuery.sizeOf(context).width >= mobile;
 }
 
-/// Extension on BuildContext for quick access.
 extension ResponsiveContext on BuildContext {
   ScreenSize get screenSize => Breakpoints.of(this);
   bool get isMobile => Breakpoints.isMobile(this);
@@ -64,8 +54,6 @@ extension ResponsiveContext on BuildContext {
   double get screenHeight => MediaQuery.sizeOf(this).height;
 }
 
-/// Wraps a child with minimum size constraints.
-/// On small viewports the content becomes scrollable in both axes.
 class MinSizeContainer extends StatelessWidget {
   final Widget child;
 
@@ -109,7 +97,6 @@ class MinSizeContainer extends StatelessWidget {
   }
 }
 
-/// Responsive padding: more on desktop, less on mobile.
 class ResponsivePadding extends StatelessWidget {
   final Widget child;
 

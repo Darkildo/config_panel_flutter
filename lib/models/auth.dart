@@ -1,5 +1,3 @@
-// Matches proto/v1/auth.proto
-
 class LoginRequest {
   final String login;
   final String password;

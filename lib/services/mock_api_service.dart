@@ -5,7 +5,6 @@ import '../models/config.dart';
 import '../models/device.dart';
 import 'api_service.dart';
 
-/// Mock implementation for UI development without a running backend.
 class MockApiService implements ApiService {
   final _random = Random();
   int _nextDeviceId = 100;
@@ -135,8 +134,6 @@ class MockApiService implements ApiService {
     await Future.delayed(Duration(milliseconds: 300 + _random.nextInt(400)));
   }
 
-  // ── Auth ──
-
   @override
   Future<AuthResponse> register(RegisterRequest request) async {
     await _simulateLatency();
@@ -156,12 +153,9 @@ class MockApiService implements ApiService {
     if (request.login.isEmpty || request.password.isEmpty) {
       throw Exception('Login and password are required');
     }
-    // Accept any non-empty credentials for mock
     final token = 'mock_token_${DateTime.now().millisecondsSinceEpoch}';
     return AuthResponse(token: token);
   }
-
-  // ── Devices ──
 
   @override
   Future<Device> createDevice(CreateDeviceRequest request) async {
@@ -196,8 +190,6 @@ class MockApiService implements ApiService {
 
     return result;
   }
-
-  // ── Configs ──
 
   @override
   Future<DeviceConfig> createConfig(CreateConfigRequest request) async {

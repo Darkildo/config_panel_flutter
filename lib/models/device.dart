@@ -1,4 +1,3 @@
-/// Device model matching proto/v1/device.proto — DeviceResponse
 class Device {
   final int id;
   final String hostname;
@@ -37,7 +36,6 @@ class Device {
   };
 }
 
-/// Matches ListDevicesRequest
 class ListDevicesRequest {
   final bool? isActive;
   final String hostnameSearch;
@@ -45,7 +43,6 @@ class ListDevicesRequest {
   const ListDevicesRequest({this.isActive, this.hostnameSearch = ''});
 }
 
-/// Matches CreateDeviceRequest
 class CreateDeviceRequest {
   final String hostname;
   final String ip;

@@ -1,23 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// ══════════════════════════════════════════════════════════
-///  KEYGEN / CRACKME 2000s RETRO THEME
-/// ══════════════════════════════════════════════════════════
 ///
-/// Dark background, neon green / cyan / magenta accents,
-/// monospace fonts, beveled borders, "hacker" aesthetic.
 
 class RetroColors {
   RetroColors._();
 
-  // Base
   static const Color background = Color(0xFF0A0A0A);
   static const Color surface = Color(0xFF1A1A2E);
   static const Color surfaceLight = Color(0xFF16213E);
   static const Color surfaceBorder = Color(0xFF0F3460);
 
-  // Neon accents
   static const Color neonGreen = Color(0xFF39FF14);
   static const Color neonCyan = Color(0xFF00FFFF);
   static const Color neonMagenta = Color(0xFFFF00FF);
@@ -25,19 +18,16 @@ class RetroColors {
   static const Color neonOrange = Color(0xFFFF6600);
   static const Color neonRed = Color(0xFFFF0040);
 
-  // Text
   static const Color textPrimary = Color(0xFF39FF14);
   static const Color textSecondary = Color(0xFF00FFFF);
   static const Color textMuted = Color(0xFF4A7C59);
   static const Color textDim = Color(0xFF3A3A5C);
 
-  // Status
   static const Color success = Color(0xFF39FF14);
   static const Color error = Color(0xFFFF0040);
   static const Color warning = Color(0xFFFFFF00);
   static const Color info = Color(0xFF00FFFF);
 
-  // Gradient for "window title bar"
   static const LinearGradient titleBarGradient = LinearGradient(
     colors: [Color(0xFF000080), Color(0xFF1084d0)],
   );
@@ -76,7 +66,6 @@ class RetroTheme {
         onError: RetroColors.background,
       ),
 
-      // AppBar
       appBarTheme: AppBarTheme(
         backgroundColor: RetroColors.surface,
         foregroundColor: RetroColors.neonGreen,
@@ -85,7 +74,6 @@ class RetroTheme {
         iconTheme: const IconThemeData(color: RetroColors.neonCyan),
       ),
 
-      // Text
       textTheme: TextTheme(
         displayLarge: _monoStyle.copyWith(fontSize: 36),
         displayMedium: _monoStyle.copyWith(fontSize: 28),
@@ -113,7 +101,6 @@ class RetroTheme {
         ),
       ),
 
-      // Input fields
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: const Color(0xFF0D0D1A),
@@ -148,7 +135,6 @@ class RetroTheme {
         ),
       ),
 
-      // Elevated buttons
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: RetroColors.surfaceLight,
@@ -161,7 +147,6 @@ class RetroTheme {
         ),
       ),
 
-      // Outlined buttons
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: RetroColors.neonCyan,
@@ -172,7 +157,6 @@ class RetroTheme {
         ),
       ),
 
-      // Text buttons
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: RetroColors.neonCyan,
@@ -180,7 +164,6 @@ class RetroTheme {
         ),
       ),
 
-      // Cards
       cardTheme: CardThemeData(
         color: RetroColors.surface,
         elevation: 0,
@@ -190,7 +173,6 @@ class RetroTheme {
         ),
       ),
 
-      // Data tables
       dataTableTheme: DataTableThemeData(
         headingTextStyle: _monoStyleSmall.copyWith(
           fontSize: 13,
@@ -218,16 +200,13 @@ class RetroTheme {
         ),
       ),
 
-      // Divider
       dividerTheme: const DividerThemeData(
         color: RetroColors.surfaceBorder,
         thickness: 1,
       ),
 
-      // Icon
       iconTheme: const IconThemeData(color: RetroColors.neonCyan, size: 20),
 
-      // Chips
       chipTheme: ChipThemeData(
         backgroundColor: RetroColors.surface,
         selectedColor: RetroColors.neonGreen.withValues(alpha: 0.2),
@@ -236,7 +215,6 @@ class RetroTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
       ),
 
-      // Snackbar
       snackBarTheme: SnackBarThemeData(
         backgroundColor: RetroColors.surface,
         contentTextStyle: _monoStyleSmall.copyWith(
@@ -250,7 +228,6 @@ class RetroTheme {
         behavior: SnackBarBehavior.floating,
       ),
 
-      // Dialogs
       dialogTheme: DialogThemeData(
         backgroundColor: RetroColors.surface,
         shape: RoundedRectangleBorder(
@@ -263,7 +240,6 @@ class RetroTheme {
         ),
       ),
 
-      // Dropdown
       dropdownMenuTheme: DropdownMenuThemeData(
         textStyle: _monoStyleSmall.copyWith(
           fontSize: 14,
@@ -279,7 +255,6 @@ class RetroTheme {
         ),
       ),
 
-      // Tabs
       tabBarTheme: TabBarThemeData(
         labelColor: RetroColors.neonGreen,
         unselectedLabelColor: RetroColors.textMuted,
@@ -287,13 +262,11 @@ class RetroTheme {
         labelStyle: _monoStyleSmall.copyWith(fontSize: 14),
       ),
 
-      // Progress indicators
       progressIndicatorTheme: const ProgressIndicatorThemeData(
         color: RetroColors.neonGreen,
         linearTrackColor: RetroColors.surfaceBorder,
       ),
 
-      // Scrollbar
       scrollbarTheme: ScrollbarThemeData(
         thumbColor: WidgetStateProperty.all(RetroColors.surfaceBorder),
         trackColor: WidgetStateProperty.all(RetroColors.background),

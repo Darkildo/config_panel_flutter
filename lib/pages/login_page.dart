@@ -56,11 +56,9 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: .center,
               children: [
-                // ASCII art: hide on small screens, show compact on tablet
                 if (!isMobile) const AsciiHeader(),
                 if (!isMobile) const SizedBox(height: 32),
 
-                // On mobile, show a simple text header instead
                 if (isMobile) ...[
                   Text(
                     '[ CTRL PANEL ]',

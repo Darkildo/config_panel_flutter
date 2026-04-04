@@ -52,8 +52,6 @@ class DeviceProvider extends ChangeNotifier {
     }
   }
 
-  // ── Create Device ──
-
   bool _isCreating = false;
   String? _createError;
 
@@ -81,7 +79,6 @@ class DeviceProvider extends ChangeNotifier {
       );
       _isCreating = false;
       notifyListeners();
-      // Reload device list to include new device
       await loadDevices();
       return true;
     } catch (e) {

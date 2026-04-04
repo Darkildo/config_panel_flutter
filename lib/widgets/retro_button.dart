@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/retro_theme.dart';
 
-/// Keygen-style button with neon border glow.
 class RetroButton extends StatefulWidget {
   final String label;
   final VoidCallback? onPressed;
