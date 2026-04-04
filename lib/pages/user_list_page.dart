@@ -382,7 +382,7 @@ class _UserListPageState extends State<UserListPage> {
                             const SizedBox(width: 12),
                             IconButton(
                               icon: const Icon(
-                                Icons.delete_outline,
+                                Icons.delete,
                                 size: 18,
                                 color: RetroColors.neonRed,
                               ),
@@ -487,7 +487,7 @@ class _UserCard extends StatelessWidget {
                 const SizedBox(width: 8),
                 IconButton(
                   icon: const Icon(
-                    Icons.delete_outline,
+                    Icons.delete,
                     size: 18,
                     color: RetroColors.neonRed,
                   ),
