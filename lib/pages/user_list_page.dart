@@ -9,7 +9,6 @@ import '../providers/user_provider.dart';
 import '../theme/responsive.dart';
 import '../theme/retro_theme.dart';
 import '../widgets/retro_button.dart';
-import '../widgets/retro_status_badge.dart';
 import '../widgets/retro_text_field.dart';
 import '../widgets/retro_window.dart';
 import '../widgets/scanline_overlay.dart';

@@ -9,7 +9,7 @@ class MockApiService implements ApiService {
   final _random = Random();
   int _nextDeviceId = 100;
   int _nextConfigId = 1000;
-  int _nextUserId = 10;
+  
 
   final List<User> _users = [
     User(id: 1, login: 'admin', createdAt: DateTime(2024, 1, 1)),
