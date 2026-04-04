@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:config_panel_flutter/models/device.dart';
 import 'package:config_panel_flutter/models/config.dart';
 import 'package:config_panel_flutter/models/auth.dart';
-import 'package:config_panel_flutter/services/mock_api_service.dart';
+import 'package:config_panel_flutter/services/app_config.dart';
 
 void main() {
   group('Models', () {
@@ -21,6 +21,25 @@ void main() {
       expect(device.isActive, true);
     });
 
+    test('Device.toJson roundtrip', () {
+      final device = Device(
+        id: 42,
+        hostname: 'srv-test',
+        ip: '10.0.0.1',
+        location: 'DC-1',
+        isActive: true,
+        createdAt: DateTime(2024, 6, 15),
+      );
+      final json = device.toJson();
+      expect(json['id'], 42);
+      expect(json['hostname'], 'srv-test');
+      expect(json['is_active'], true);
+
+      final restored = Device.fromJson(json);
+      expect(restored.id, device.id);
+      expect(restored.hostname, device.hostname);
+    });
+
     test('DeviceConfig.isApplied returns correct value', () {
       final config = DeviceConfig(
         id: 1,
@@ -35,82 +54,68 @@ void main() {
       expect(applied.isApplied, true);
     });
 
+    test('DeviceConfig.copyWith preserves fields', () {
+      final config = DeviceConfig(
+        id: 10,
+        deviceId: 5,
+        version: 'v2.0',
+        content: 'data',
+        createdAt: DateTime(2024, 1, 1),
+      );
+      final now = DateTime.now();
+      final applied = config.copyWith(appliedAt: now);
+
+      expect(applied.id, 10);
+      expect(applied.deviceId, 5);
+      expect(applied.version, 'v2.0');
+      expect(applied.content, 'data');
+      expect(applied.appliedAt, now);
+    });
+
     test('AuthResponse.fromJson works correctly', () {
       final json = {'token': 'test_token_123'};
       final auth = AuthResponse.fromJson(json);
       expect(auth.token, 'test_token_123');
     });
+
+    test('ListDevicesRequest defaults', () {
+      const req = ListDevicesRequest();
+      expect(req.isActive, isNull);
+      expect(req.hostnameSearch, '');
+    });
+
+    test('ListConfigsRequest defaults', () {
+      const req = ListConfigsRequest(deviceId: 1);
+      expect(req.page, 1);
+      expect(req.pageSize, 20);
+    });
   });
 
-  group('MockApiService', () {
-    late MockApiService api;
-
-    setUp(() {
-      api = MockApiService();
+  group('AppConfig', () {
+    test('defaults to localhost:8080', () {
+      // fromEnvironment uses compile-time constants;
+      // without --dart-define the defaults are used
+      final config = AppConfig.fromEnvironment();
+      expect(config.host, 'localhost');
+      expect(config.port, 8080);
+      expect(config.useTls, false);
     });
 
-    test('login returns token', () async {
-      final response = await api.login(
-        const LoginRequest(login: 'admin', password: '1234'),
-      );
-      expect(response.token, isNotEmpty);
+    test('authority string format', () {
+      const config = AppConfig(host: '10.0.0.1', port: 9090);
+      expect(config.authority, '10.0.0.1:9090');
     });
 
-    test('register returns token', () async {
-      final response = await api.register(
-        const RegisterRequest(login: 'newuser', password: '1234'),
-      );
-      expect(response.token, isNotEmpty);
+    test('toString includes protocol', () {
+      const config = AppConfig(host: 'api.test', port: 443, useTls: true);
+      expect(config.toString(), contains('https'));
+      expect(config.toString(), contains('api.test'));
+      expect(config.toString(), contains('443'));
     });
 
-    test('listDevices returns devices', () async {
-      final devices = await api.listDevices(const ListDevicesRequest());
-      expect(devices, isNotEmpty);
-    });
-
-    test('listDevices filters by active', () async {
-      final active = await api.listDevices(
-        const ListDevicesRequest(isActive: true),
-      );
-      expect(active.every((d) => d.isActive), true);
-    });
-
-    test('listDevices filters by hostname search', () async {
-      final results = await api.listDevices(
-        const ListDevicesRequest(hostnameSearch: 'web'),
-      );
-      expect(
-        results.every((d) => d.hostname.toLowerCase().contains('web')),
-        true,
-      );
-    });
-
-    test('listConfigs returns configs for device', () async {
-      final response = await api.listConfigs(
-        const ListConfigsRequest(deviceId: 1),
-      );
-      expect(response.configs, isNotEmpty);
-      expect(response.configs.every((c) => c.deviceId == 1), true);
-    });
-
-    test('createConfig adds new config', () async {
-      final config = await api.createConfig(
-        const CreateConfigRequest(
-          deviceId: 1,
-          version: 'v2.0.0',
-          content: 'new config',
-        ),
-      );
-      expect(config.version, 'v2.0.0');
-      expect(config.deviceId, 1);
-      expect(config.isApplied, false);
-    });
-
-    test('applyConfig marks config as applied', () async {
-      // Config id=3 is not applied in mock data
-      final response = await api.applyConfig(3);
-      expect(response.success, true);
-      expect(response.appliedAt, isNotNull);
+    test('toString http when no TLS', () {
+      const config = AppConfig(host: 'localhost', port: 8080);
+      expect(config.toString(), contains('http://'));
     });
   });
 }
