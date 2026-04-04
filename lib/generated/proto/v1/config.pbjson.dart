@@ -30,6 +30,18 @@ final $typed_data.Uint8List createConfigRequestDescriptor = $convert.base64Decod
     'ChNDcmVhdGVDb25maWdSZXF1ZXN0EhsKCWRldmljZV9pZBgBIAEoA1IIZGV2aWNlSWQSGAoHdm'
     'Vyc2lvbhgCIAEoCVIHdmVyc2lvbhIYCgdjb250ZW50GAMgASgJUgdjb250ZW50');
 
+@$core.Deprecated('Use getConfigRequestDescriptor instead')
+const GetConfigRequest$json = {
+  '1': 'GetConfigRequest',
+  '2': [
+    {'1': 'id', '3': 1, '4': 1, '5': 3, '10': 'id'},
+  ],
+};
+
+/// Descriptor for `GetConfigRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getConfigRequestDescriptor =
+    $convert.base64Decode('ChBHZXRDb25maWdSZXF1ZXN0Eg4KAmlkGAEgASgDUgJpZA==');
+
 @$core.Deprecated('Use listConfigsRequestDescriptor instead')
 const ListConfigsRequest$json = {
   '1': 'ListConfigsRequest',
@@ -44,6 +56,54 @@ const ListConfigsRequest$json = {
 final $typed_data.Uint8List listConfigsRequestDescriptor = $convert.base64Decode(
     'ChJMaXN0Q29uZmlnc1JlcXVlc3QSGwoJZGV2aWNlX2lkGAEgASgDUghkZXZpY2VJZBISCgRwYW'
     'dlGAIgASgFUgRwYWdlEhsKCXBhZ2Vfc2l6ZRgDIAEoBVIIcGFnZVNpemU=');
+
+@$core.Deprecated('Use updateConfigRequestDescriptor instead')
+const UpdateConfigRequest$json = {
+  '1': 'UpdateConfigRequest',
+  '2': [
+    {'1': 'id', '3': 1, '4': 1, '5': 3, '10': 'id'},
+    {
+      '1': 'version',
+      '3': 2,
+      '4': 1,
+      '5': 9,
+      '9': 0,
+      '10': 'version',
+      '17': true
+    },
+    {
+      '1': 'content',
+      '3': 3,
+      '4': 1,
+      '5': 9,
+      '9': 1,
+      '10': 'content',
+      '17': true
+    },
+  ],
+  '8': [
+    {'1': '_version'},
+    {'1': '_content'},
+  ],
+};
+
+/// Descriptor for `UpdateConfigRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List updateConfigRequestDescriptor = $convert.base64Decode(
+    'ChNVcGRhdGVDb25maWdSZXF1ZXN0Eg4KAmlkGAEgASgDUgJpZBIdCgd2ZXJzaW9uGAIgASgJSA'
+    'BSB3ZlcnNpb26IAQESHQoHY29udGVudBgDIAEoCUgBUgdjb250ZW50iAEBQgoKCF92ZXJzaW9u'
+    'QgoKCF9jb250ZW50');
+
+@$core.Deprecated('Use deleteConfigRequestDescriptor instead')
+const DeleteConfigRequest$json = {
+  '1': 'DeleteConfigRequest',
+  '2': [
+    {'1': 'id', '3': 1, '4': 1, '5': 3, '10': 'id'},
+  ],
+};
+
+/// Descriptor for `DeleteConfigRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List deleteConfigRequestDescriptor = $convert
+    .base64Decode('ChNEZWxldGVDb25maWdSZXF1ZXN0Eg4KAmlkGAEgASgDUgJpZA==');
 
 @$core.Deprecated('Use configResponseDescriptor instead')
 const ConfigResponse$json = {

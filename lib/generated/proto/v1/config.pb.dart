@@ -15,7 +15,7 @@ import 'dart:core' as $core;
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:protobuf/protobuf.dart' as $pb;
 import 'package:protobuf/well_known_types/google/protobuf/timestamp.pb.dart'
-    as $1;
+    as $2;
 
 export 'package:protobuf/protobuf.dart' show GeneratedMessageGenericExtensions;
 
@@ -98,6 +98,61 @@ class CreateConfigRequest extends $pb.GeneratedMessage {
   void clearContent() => $_clearField(3);
 }
 
+class GetConfigRequest extends $pb.GeneratedMessage {
+  factory GetConfigRequest({
+    $fixnum.Int64? id,
+  }) {
+    final result = create();
+    if (id != null) result.id = id;
+    return result;
+  }
+
+  GetConfigRequest._();
+
+  factory GetConfigRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetConfigRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetConfigRequest',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'controlpanel.v1'),
+      createEmptyInstance: create)
+    ..aInt64(1, _omitFieldNames ? '' : 'id')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetConfigRequest clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetConfigRequest copyWith(void Function(GetConfigRequest) updates) =>
+      super.copyWith((message) => updates(message as GetConfigRequest))
+          as GetConfigRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetConfigRequest create() => GetConfigRequest._();
+  @$core.override
+  GetConfigRequest createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static GetConfigRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GetConfigRequest>(create);
+  static GetConfigRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $fixnum.Int64 get id => $_getI64(0);
+  @$pb.TagNumber(1)
+  set id($fixnum.Int64 value) => $_setInt64(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearId() => $_clearField(1);
+}
+
 class ListConfigsRequest extends $pb.GeneratedMessage {
   factory ListConfigsRequest({
     $fixnum.Int64? deviceId,
@@ -177,14 +232,148 @@ class ListConfigsRequest extends $pb.GeneratedMessage {
   void clearPageSize() => $_clearField(3);
 }
 
+class UpdateConfigRequest extends $pb.GeneratedMessage {
+  factory UpdateConfigRequest({
+    $fixnum.Int64? id,
+    $core.String? version,
+    $core.String? content,
+  }) {
+    final result = create();
+    if (id != null) result.id = id;
+    if (version != null) result.version = version;
+    if (content != null) result.content = content;
+    return result;
+  }
+
+  UpdateConfigRequest._();
+
+  factory UpdateConfigRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory UpdateConfigRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'UpdateConfigRequest',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'controlpanel.v1'),
+      createEmptyInstance: create)
+    ..aInt64(1, _omitFieldNames ? '' : 'id')
+    ..aOS(2, _omitFieldNames ? '' : 'version')
+    ..aOS(3, _omitFieldNames ? '' : 'content')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  UpdateConfigRequest clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  UpdateConfigRequest copyWith(void Function(UpdateConfigRequest) updates) =>
+      super.copyWith((message) => updates(message as UpdateConfigRequest))
+          as UpdateConfigRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static UpdateConfigRequest create() => UpdateConfigRequest._();
+  @$core.override
+  UpdateConfigRequest createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static UpdateConfigRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<UpdateConfigRequest>(create);
+  static UpdateConfigRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $fixnum.Int64 get id => $_getI64(0);
+  @$pb.TagNumber(1)
+  set id($fixnum.Int64 value) => $_setInt64(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearId() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get version => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set version($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasVersion() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearVersion() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get content => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set content($core.String value) => $_setString(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasContent() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearContent() => $_clearField(3);
+}
+
+class DeleteConfigRequest extends $pb.GeneratedMessage {
+  factory DeleteConfigRequest({
+    $fixnum.Int64? id,
+  }) {
+    final result = create();
+    if (id != null) result.id = id;
+    return result;
+  }
+
+  DeleteConfigRequest._();
+
+  factory DeleteConfigRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory DeleteConfigRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'DeleteConfigRequest',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'controlpanel.v1'),
+      createEmptyInstance: create)
+    ..aInt64(1, _omitFieldNames ? '' : 'id')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  DeleteConfigRequest clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  DeleteConfigRequest copyWith(void Function(DeleteConfigRequest) updates) =>
+      super.copyWith((message) => updates(message as DeleteConfigRequest))
+          as DeleteConfigRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static DeleteConfigRequest create() => DeleteConfigRequest._();
+  @$core.override
+  DeleteConfigRequest createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static DeleteConfigRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<DeleteConfigRequest>(create);
+  static DeleteConfigRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $fixnum.Int64 get id => $_getI64(0);
+  @$pb.TagNumber(1)
+  set id($fixnum.Int64 value) => $_setInt64(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearId() => $_clearField(1);
+}
+
 class ConfigResponse extends $pb.GeneratedMessage {
   factory ConfigResponse({
     $fixnum.Int64? id,
     $fixnum.Int64? deviceId,
     $core.String? version,
     $core.String? content,
-    $1.Timestamp? createdAt,
-    $1.Timestamp? appliedAt,
+    $2.Timestamp? createdAt,
+    $2.Timestamp? appliedAt,
   }) {
     final result = create();
     if (id != null) result.id = id;
@@ -214,10 +403,10 @@ class ConfigResponse extends $pb.GeneratedMessage {
     ..aInt64(2, _omitFieldNames ? '' : 'deviceId')
     ..aOS(3, _omitFieldNames ? '' : 'version')
     ..aOS(4, _omitFieldNames ? '' : 'content')
-    ..aOM<$1.Timestamp>(5, _omitFieldNames ? '' : 'createdAt',
-        subBuilder: $1.Timestamp.create)
-    ..aOM<$1.Timestamp>(6, _omitFieldNames ? '' : 'appliedAt',
-        subBuilder: $1.Timestamp.create)
+    ..aOM<$2.Timestamp>(5, _omitFieldNames ? '' : 'createdAt',
+        subBuilder: $2.Timestamp.create)
+    ..aOM<$2.Timestamp>(6, _omitFieldNames ? '' : 'appliedAt',
+        subBuilder: $2.Timestamp.create)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -276,26 +465,26 @@ class ConfigResponse extends $pb.GeneratedMessage {
   void clearContent() => $_clearField(4);
 
   @$pb.TagNumber(5)
-  $1.Timestamp get createdAt => $_getN(4);
+  $2.Timestamp get createdAt => $_getN(4);
   @$pb.TagNumber(5)
-  set createdAt($1.Timestamp value) => $_setField(5, value);
+  set createdAt($2.Timestamp value) => $_setField(5, value);
   @$pb.TagNumber(5)
   $core.bool hasCreatedAt() => $_has(4);
   @$pb.TagNumber(5)
   void clearCreatedAt() => $_clearField(5);
   @$pb.TagNumber(5)
-  $1.Timestamp ensureCreatedAt() => $_ensure(4);
+  $2.Timestamp ensureCreatedAt() => $_ensure(4);
 
   @$pb.TagNumber(6)
-  $1.Timestamp get appliedAt => $_getN(5);
+  $2.Timestamp get appliedAt => $_getN(5);
   @$pb.TagNumber(6)
-  set appliedAt($1.Timestamp value) => $_setField(6, value);
+  set appliedAt($2.Timestamp value) => $_setField(6, value);
   @$pb.TagNumber(6)
   $core.bool hasAppliedAt() => $_has(5);
   @$pb.TagNumber(6)
   void clearAppliedAt() => $_clearField(6);
   @$pb.TagNumber(6)
-  $1.Timestamp ensureAppliedAt() => $_ensure(5);
+  $2.Timestamp ensureAppliedAt() => $_ensure(5);
 }
 
 class ListConfigsResponse extends $pb.GeneratedMessage {
@@ -442,7 +631,7 @@ class ApplyConfigRequest extends $pb.GeneratedMessage {
 class ApplyConfigResponse extends $pb.GeneratedMessage {
   factory ApplyConfigResponse({
     $core.bool? success,
-    $1.Timestamp? appliedAt,
+    $2.Timestamp? appliedAt,
   }) {
     final result = create();
     if (success != null) result.success = success;
@@ -465,8 +654,8 @@ class ApplyConfigResponse extends $pb.GeneratedMessage {
           const $pb.PackageName(_omitMessageNames ? '' : 'controlpanel.v1'),
       createEmptyInstance: create)
     ..aOB(1, _omitFieldNames ? '' : 'success')
-    ..aOM<$1.Timestamp>(2, _omitFieldNames ? '' : 'appliedAt',
-        subBuilder: $1.Timestamp.create)
+    ..aOM<$2.Timestamp>(2, _omitFieldNames ? '' : 'appliedAt',
+        subBuilder: $2.Timestamp.create)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -498,15 +687,15 @@ class ApplyConfigResponse extends $pb.GeneratedMessage {
   void clearSuccess() => $_clearField(1);
 
   @$pb.TagNumber(2)
-  $1.Timestamp get appliedAt => $_getN(1);
+  $2.Timestamp get appliedAt => $_getN(1);
   @$pb.TagNumber(2)
-  set appliedAt($1.Timestamp value) => $_setField(2, value);
+  set appliedAt($2.Timestamp value) => $_setField(2, value);
   @$pb.TagNumber(2)
   $core.bool hasAppliedAt() => $_has(1);
   @$pb.TagNumber(2)
   void clearAppliedAt() => $_clearField(2);
   @$pb.TagNumber(2)
-  $1.Timestamp ensureAppliedAt() => $_ensure(1);
+  $2.Timestamp ensureAppliedAt() => $_ensure(1);
 }
 
 const $core.bool _omitFieldNames =

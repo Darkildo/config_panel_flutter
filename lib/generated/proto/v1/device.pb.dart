@@ -15,7 +15,7 @@ import 'dart:core' as $core;
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:protobuf/protobuf.dart' as $pb;
 import 'package:protobuf/well_known_types/google/protobuf/timestamp.pb.dart'
-    as $1;
+    as $2;
 
 export 'package:protobuf/protobuf.dart' show GeneratedMessageGenericExtensions;
 
@@ -110,6 +110,61 @@ class CreateDeviceRequest extends $pb.GeneratedMessage {
   void clearIsActive() => $_clearField(4);
 }
 
+class GetDeviceRequest extends $pb.GeneratedMessage {
+  factory GetDeviceRequest({
+    $fixnum.Int64? id,
+  }) {
+    final result = create();
+    if (id != null) result.id = id;
+    return result;
+  }
+
+  GetDeviceRequest._();
+
+  factory GetDeviceRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetDeviceRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetDeviceRequest',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'controlpanel.v1'),
+      createEmptyInstance: create)
+    ..aInt64(1, _omitFieldNames ? '' : 'id')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetDeviceRequest clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetDeviceRequest copyWith(void Function(GetDeviceRequest) updates) =>
+      super.copyWith((message) => updates(message as GetDeviceRequest))
+          as GetDeviceRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetDeviceRequest create() => GetDeviceRequest._();
+  @$core.override
+  GetDeviceRequest createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static GetDeviceRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GetDeviceRequest>(create);
+  static GetDeviceRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $fixnum.Int64 get id => $_getI64(0);
+  @$pb.TagNumber(1)
+  set id($fixnum.Int64 value) => $_setInt64(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearId() => $_clearField(1);
+}
+
 class ListDevicesRequest extends $pb.GeneratedMessage {
   factory ListDevicesRequest({
     $core.bool? isActive,
@@ -177,6 +232,164 @@ class ListDevicesRequest extends $pb.GeneratedMessage {
   void clearHostnameSearch() => $_clearField(2);
 }
 
+class UpdateDeviceRequest extends $pb.GeneratedMessage {
+  factory UpdateDeviceRequest({
+    $fixnum.Int64? id,
+    $core.String? hostname,
+    $core.String? ip,
+    $core.String? location,
+    $core.bool? isActive,
+  }) {
+    final result = create();
+    if (id != null) result.id = id;
+    if (hostname != null) result.hostname = hostname;
+    if (ip != null) result.ip = ip;
+    if (location != null) result.location = location;
+    if (isActive != null) result.isActive = isActive;
+    return result;
+  }
+
+  UpdateDeviceRequest._();
+
+  factory UpdateDeviceRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory UpdateDeviceRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'UpdateDeviceRequest',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'controlpanel.v1'),
+      createEmptyInstance: create)
+    ..aInt64(1, _omitFieldNames ? '' : 'id')
+    ..aOS(2, _omitFieldNames ? '' : 'hostname')
+    ..aOS(3, _omitFieldNames ? '' : 'ip')
+    ..aOS(4, _omitFieldNames ? '' : 'location')
+    ..aOB(5, _omitFieldNames ? '' : 'isActive')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  UpdateDeviceRequest clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  UpdateDeviceRequest copyWith(void Function(UpdateDeviceRequest) updates) =>
+      super.copyWith((message) => updates(message as UpdateDeviceRequest))
+          as UpdateDeviceRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static UpdateDeviceRequest create() => UpdateDeviceRequest._();
+  @$core.override
+  UpdateDeviceRequest createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static UpdateDeviceRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<UpdateDeviceRequest>(create);
+  static UpdateDeviceRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $fixnum.Int64 get id => $_getI64(0);
+  @$pb.TagNumber(1)
+  set id($fixnum.Int64 value) => $_setInt64(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearId() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get hostname => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set hostname($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasHostname() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearHostname() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get ip => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set ip($core.String value) => $_setString(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasIp() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearIp() => $_clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.String get location => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set location($core.String value) => $_setString(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasLocation() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearLocation() => $_clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.bool get isActive => $_getBF(4);
+  @$pb.TagNumber(5)
+  set isActive($core.bool value) => $_setBool(4, value);
+  @$pb.TagNumber(5)
+  $core.bool hasIsActive() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearIsActive() => $_clearField(5);
+}
+
+class DeleteDeviceRequest extends $pb.GeneratedMessage {
+  factory DeleteDeviceRequest({
+    $fixnum.Int64? id,
+  }) {
+    final result = create();
+    if (id != null) result.id = id;
+    return result;
+  }
+
+  DeleteDeviceRequest._();
+
+  factory DeleteDeviceRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory DeleteDeviceRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'DeleteDeviceRequest',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'controlpanel.v1'),
+      createEmptyInstance: create)
+    ..aInt64(1, _omitFieldNames ? '' : 'id')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  DeleteDeviceRequest clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  DeleteDeviceRequest copyWith(void Function(DeleteDeviceRequest) updates) =>
+      super.copyWith((message) => updates(message as DeleteDeviceRequest))
+          as DeleteDeviceRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static DeleteDeviceRequest create() => DeleteDeviceRequest._();
+  @$core.override
+  DeleteDeviceRequest createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static DeleteDeviceRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<DeleteDeviceRequest>(create);
+  static DeleteDeviceRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $fixnum.Int64 get id => $_getI64(0);
+  @$pb.TagNumber(1)
+  set id($fixnum.Int64 value) => $_setInt64(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearId() => $_clearField(1);
+}
+
 class DeviceResponse extends $pb.GeneratedMessage {
   factory DeviceResponse({
     $fixnum.Int64? id,
@@ -184,7 +397,7 @@ class DeviceResponse extends $pb.GeneratedMessage {
     $core.String? ip,
     $core.String? location,
     $core.bool? isActive,
-    $1.Timestamp? createdAt,
+    $2.Timestamp? createdAt,
   }) {
     final result = create();
     if (id != null) result.id = id;
@@ -215,8 +428,8 @@ class DeviceResponse extends $pb.GeneratedMessage {
     ..aOS(3, _omitFieldNames ? '' : 'ip')
     ..aOS(4, _omitFieldNames ? '' : 'location')
     ..aOB(5, _omitFieldNames ? '' : 'isActive')
-    ..aOM<$1.Timestamp>(6, _omitFieldNames ? '' : 'createdAt',
-        subBuilder: $1.Timestamp.create)
+    ..aOM<$2.Timestamp>(6, _omitFieldNames ? '' : 'createdAt',
+        subBuilder: $2.Timestamp.create)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -284,15 +497,15 @@ class DeviceResponse extends $pb.GeneratedMessage {
   void clearIsActive() => $_clearField(5);
 
   @$pb.TagNumber(6)
-  $1.Timestamp get createdAt => $_getN(5);
+  $2.Timestamp get createdAt => $_getN(5);
   @$pb.TagNumber(6)
-  set createdAt($1.Timestamp value) => $_setField(6, value);
+  set createdAt($2.Timestamp value) => $_setField(6, value);
   @$pb.TagNumber(6)
   $core.bool hasCreatedAt() => $_has(5);
   @$pb.TagNumber(6)
   void clearCreatedAt() => $_clearField(6);
   @$pb.TagNumber(6)
-  $1.Timestamp ensureCreatedAt() => $_ensure(5);
+  $2.Timestamp ensureCreatedAt() => $_ensure(5);
 }
 
 class ListDevicesResponse extends $pb.GeneratedMessage {

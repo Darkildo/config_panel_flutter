@@ -32,6 +32,18 @@ final $typed_data.Uint8List createDeviceRequestDescriptor = $convert.base64Decod
     'gCIAEoCVICaXASGgoIbG9jYXRpb24YAyABKAlSCGxvY2F0aW9uEhsKCWlzX2FjdGl2ZRgEIAEo'
     'CFIIaXNBY3RpdmU=');
 
+@$core.Deprecated('Use getDeviceRequestDescriptor instead')
+const GetDeviceRequest$json = {
+  '1': 'GetDeviceRequest',
+  '2': [
+    {'1': 'id', '3': 1, '4': 1, '5': 3, '10': 'id'},
+  ],
+};
+
+/// Descriptor for `GetDeviceRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getDeviceRequestDescriptor =
+    $convert.base64Decode('ChBHZXREZXZpY2VSZXF1ZXN0Eg4KAmlkGAEgASgDUgJpZA==');
+
 @$core.Deprecated('Use listDevicesRequestDescriptor instead')
 const ListDevicesRequest$json = {
   '1': 'ListDevicesRequest',
@@ -56,6 +68,67 @@ const ListDevicesRequest$json = {
 final $typed_data.Uint8List listDevicesRequestDescriptor = $convert.base64Decode(
     'ChJMaXN0RGV2aWNlc1JlcXVlc3QSIAoJaXNfYWN0aXZlGAEgASgISABSCGlzQWN0aXZliAEBEi'
     'cKD2hvc3RuYW1lX3NlYXJjaBgCIAEoCVIOaG9zdG5hbWVTZWFyY2hCDAoKX2lzX2FjdGl2ZQ==');
+
+@$core.Deprecated('Use updateDeviceRequestDescriptor instead')
+const UpdateDeviceRequest$json = {
+  '1': 'UpdateDeviceRequest',
+  '2': [
+    {'1': 'id', '3': 1, '4': 1, '5': 3, '10': 'id'},
+    {
+      '1': 'hostname',
+      '3': 2,
+      '4': 1,
+      '5': 9,
+      '9': 0,
+      '10': 'hostname',
+      '17': true
+    },
+    {'1': 'ip', '3': 3, '4': 1, '5': 9, '9': 1, '10': 'ip', '17': true},
+    {
+      '1': 'location',
+      '3': 4,
+      '4': 1,
+      '5': 9,
+      '9': 2,
+      '10': 'location',
+      '17': true
+    },
+    {
+      '1': 'is_active',
+      '3': 5,
+      '4': 1,
+      '5': 8,
+      '9': 3,
+      '10': 'isActive',
+      '17': true
+    },
+  ],
+  '8': [
+    {'1': '_hostname'},
+    {'1': '_ip'},
+    {'1': '_location'},
+    {'1': '_is_active'},
+  ],
+};
+
+/// Descriptor for `UpdateDeviceRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List updateDeviceRequestDescriptor = $convert.base64Decode(
+    'ChNVcGRhdGVEZXZpY2VSZXF1ZXN0Eg4KAmlkGAEgASgDUgJpZBIfCghob3N0bmFtZRgCIAEoCU'
+    'gAUghob3N0bmFtZYgBARITCgJpcBgDIAEoCUgBUgJpcIgBARIfCghsb2NhdGlvbhgEIAEoCUgC'
+    'Ughsb2NhdGlvbogBARIgCglpc19hY3RpdmUYBSABKAhIA1IIaXNBY3RpdmWIAQFCCwoJX2hvc3'
+    'RuYW1lQgUKA19pcEILCglfbG9jYXRpb25CDAoKX2lzX2FjdGl2ZQ==');
+
+@$core.Deprecated('Use deleteDeviceRequestDescriptor instead')
+const DeleteDeviceRequest$json = {
+  '1': 'DeleteDeviceRequest',
+  '2': [
+    {'1': 'id', '3': 1, '4': 1, '5': 3, '10': 'id'},
+  ],
+};
+
+/// Descriptor for `DeleteDeviceRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List deleteDeviceRequestDescriptor = $convert
+    .base64Decode('ChNEZWxldGVEZXZpY2VSZXF1ZXN0Eg4KAmlkGAEgASgDUgJpZA==');
 
 @$core.Deprecated('Use deviceResponseDescriptor instead')
 const DeviceResponse$json = {
