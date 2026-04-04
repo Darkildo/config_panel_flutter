@@ -28,12 +28,9 @@ void main() async {
     ]);
   }
 
-  // Server config from --dart-define or defaults (localhost:8080)
-  //
-  // Usage examples:
-  //   flutter run                                          -> localhost:8080
-  //   flutter run --dart-define=GRPC_HOST=192.168.1.50     -> 192.168.1.50:8080
-  //   flutter run --dart-define=GRPC_HOST=api.prod.com --dart-define=GRPC_PORT=443 --dart-define=GRPC_TLS=true
+  // Load .env file (if bundled), then resolve config.
+  // Priority: .env > --dart-define > defaults (localhost:8080)
+  await AppConfig.loadDotEnv();
   final config = AppConfig.fromEnvironment();
   debugPrint('Connecting to gRPC-Web server: $config');
 

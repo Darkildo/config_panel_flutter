@@ -47,3 +47,6 @@ app.*.map.json
 # FVM Version Cache
 .fvm/
 /.vscode
+
+# Environment config (contains server addresses, may differ per dev)
+.env
