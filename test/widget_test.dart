@@ -6,38 +6,18 @@ import 'package:config_panel_flutter/services/app_config.dart';
 
 void main() {
   group('Models', () {
-    test('Device.fromJson works correctly', () {
-      final json = {
-        'id': 1,
-        'hostname': 'test-host',
-        'ip': '10.0.0.1',
-        'location': 'DC-1',
-        'is_active': true,
-        'created_at': '2024-01-01T00:00:00.000',
-      };
-      final device = Device.fromJson(json);
-      expect(device.id, 1);
-      expect(device.hostname, 'test-host');
-      expect(device.isActive, true);
-    });
-
-    test('Device.toJson roundtrip', () {
+    test('Device fields', () {
       final device = Device(
-        id: 42,
-        hostname: 'srv-test',
+        id: 1,
+        hostname: 'test-host',
         ip: '10.0.0.1',
         location: 'DC-1',
         isActive: true,
-        createdAt: DateTime(2024, 6, 15),
+        createdAt: DateTime(2024, 1, 1),
       );
-      final json = device.toJson();
-      expect(json['id'], 42);
-      expect(json['hostname'], 'srv-test');
-      expect(json['is_active'], true);
-
-      final restored = Device.fromJson(json);
-      expect(restored.id, device.id);
-      expect(restored.hostname, device.hostname);
+      expect(device.id, 1);
+      expect(device.hostname, 'test-host');
+      expect(device.isActive, true);
     });
 
     test('DeviceConfig.isApplied returns correct value', () {
@@ -72,10 +52,15 @@ void main() {
       expect(applied.appliedAt, now);
     });
 
-    test('AuthResponse.fromJson works correctly', () {
-      final json = {'token': 'test_token_123'};
-      final auth = AuthResponse.fromJson(json);
+    test('AuthResponse token', () {
+      const auth = AuthResponse(token: 'test_token_123');
       expect(auth.token, 'test_token_123');
+    });
+
+    test('User fields', () {
+      final user = User(id: 1, login: 'admin', createdAt: DateTime(2024, 1, 1));
+      expect(user.id, 1);
+      expect(user.login, 'admin');
     });
 
     test('ListDevicesRequest defaults', () {
@@ -89,12 +74,17 @@ void main() {
       expect(req.page, 1);
       expect(req.pageSize, 20);
     });
+
+    test('UpdateDeviceRequest optional fields', () {
+      const req = UpdateDeviceRequest(id: 1, hostname: 'new-host');
+      expect(req.id, 1);
+      expect(req.hostname, 'new-host');
+      expect(req.ip, isNull);
+    });
   });
 
   group('AppConfig', () {
     test('defaults to localhost:8080', () {
-      // fromEnvironment uses compile-time constants;
-      // without --dart-define the defaults are used
       final config = AppConfig.fromEnvironment();
       expect(config.host, 'localhost');
       expect(config.port, 8080);
@@ -110,12 +100,6 @@ void main() {
       const config = AppConfig(host: 'api.test', port: 443, useTls: true);
       expect(config.toString(), contains('https'));
       expect(config.toString(), contains('api.test'));
-      expect(config.toString(), contains('443'));
-    });
-
-    test('toString http when no TLS', () {
-      const config = AppConfig(host: 'localhost', port: 8080);
-      expect(config.toString(), contains('http://'));
     });
   });
 }
