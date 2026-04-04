@@ -17,38 +17,20 @@ class DeviceConfig {
 
   bool get isApplied => appliedAt != null;
 
-  factory DeviceConfig.fromJson(Map<String, dynamic> json) {
-    return DeviceConfig(
-      id: json['id'] as int,
-      deviceId: json['device_id'] as int,
-      version: json['version'] as String,
-      content: json['content'] as String,
-      createdAt: DateTime.parse(json['created_at'] as String),
-      appliedAt: json['applied_at'] != null
-          ? DateTime.parse(json['applied_at'] as String)
-          : null,
-    );
-  }
-
-  DeviceConfig copyWith({DateTime? appliedAt}) {
+  DeviceConfig copyWith({
+    String? version,
+    String? content,
+    DateTime? appliedAt,
+  }) {
     return DeviceConfig(
       id: id,
       deviceId: deviceId,
-      version: version,
-      content: content,
+      version: version ?? this.version,
+      content: content ?? this.content,
       createdAt: createdAt,
       appliedAt: appliedAt ?? this.appliedAt,
     );
   }
-
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'device_id': deviceId,
-    'version': version,
-    'content': content,
-    'created_at': createdAt.toIso8601String(),
-    'applied_at': appliedAt?.toIso8601String(),
-  };
 }
 
 class CreateConfigRequest {
@@ -61,12 +43,12 @@ class CreateConfigRequest {
     required this.version,
     required this.content,
   });
+}
 
-  Map<String, dynamic> toJson() => {
-    'device_id': deviceId,
-    'version': version,
-    'content': content,
-  };
+class GetConfigRequest {
+  final int id;
+
+  const GetConfigRequest({required this.id});
 }
 
 class ListConfigsRequest {
@@ -93,6 +75,20 @@ class ListConfigsResponse {
     required this.page,
     required this.pageSize,
   });
+}
+
+class UpdateConfigRequest {
+  final int id;
+  final String? version;
+  final String? content;
+
+  const UpdateConfigRequest({required this.id, this.version, this.content});
+}
+
+class DeleteConfigRequest {
+  final int id;
+
+  const DeleteConfigRequest({required this.id});
 }
 
 class ApplyConfigResponse {
