@@ -10,14 +10,15 @@ import 'providers/config_provider.dart';
 import 'providers/device_provider.dart';
 import 'router/app_router.dart';
 import 'services/api_service.dart';
-import 'services/mock_api_service.dart';
+import 'services/app_config.dart';
+import 'services/grpc_api_service.dart';
 import 'theme/responsive.dart';
 import 'theme/retro_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Force portrait-first on mobile, allow all on desktop/web
+  // Allow all orientations on mobile
   if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -27,7 +28,17 @@ void main() async {
     ]);
   }
 
-  final apiService = MockApiService();
+  // Server config from --dart-define or defaults (localhost:8080)
+  //
+  // Usage examples:
+  //   flutter run                                          -> localhost:8080
+  //   flutter run --dart-define=GRPC_HOST=192.168.1.50     -> 192.168.1.50:8080
+  //   flutter run --dart-define=GRPC_HOST=api.prod.com --dart-define=GRPC_PORT=443 --dart-define=GRPC_TLS=true
+  final config = AppConfig.fromEnvironment();
+  debugPrint('Connecting to gRPC-Web server: $config');
+
+  final apiService = GrpcApiService(config: config);
+
   runApp(ConfigPanelApp(apiService: apiService));
 }
 
@@ -70,7 +81,6 @@ class _ConfigPanelAppState extends State<ConfigPanelApp> {
         theme: RetroTheme.darkTheme,
         routerConfig: _appRouter.router,
         builder: (context, child) {
-          // Enforce minimum size: if viewport is smaller, content scrolls
           return MinSizeContainer(child: child ?? const SizedBox.shrink());
         },
       ),
