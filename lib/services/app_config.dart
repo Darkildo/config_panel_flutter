@@ -37,9 +37,9 @@ class AppConfig {
     const dartDefinePort = int.fromEnvironment('GRPC_PORT', defaultValue: 0);
     const dartDefineTls = bool.fromEnvironment('GRPC_TLS', defaultValue: false);
 
-    final envHost = dotenv.maybeGet('GRPC_HOST');
-    final envPort = dotenv.maybeGet('GRPC_PORT');
-    final envTls = dotenv.maybeGet('GRPC_TLS');
+    final envHost = _dotenvGet('GRPC_HOST');
+    final envPort = _dotenvGet('GRPC_PORT');
+    final envTls = _dotenvGet('GRPC_TLS');
 
     final host = _firstNonEmpty([envHost, dartDefineHost]) ?? 'localhost';
     final port = _firstInt([envPort, dartDefinePort]) ?? 8080;
@@ -52,6 +52,17 @@ class AppConfig {
 
   @override
   String toString() => 'AppConfig(${useTls ? "https" : "http"}://$host:$port)';
+
+  // ── Dotenv safe accessor ──
+
+  /// Returns null if dotenv is not initialized (e.g. in tests).
+  static String? _dotenvGet(String key) {
+    try {
+      return dotenv.maybeGet(key);
+    } catch (_) {
+      return null;
+    }
+  }
 
   // ── Resolution helpers ──
 
