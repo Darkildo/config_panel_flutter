@@ -1,22 +1,35 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import 'token_storage_web.dart' if (dart.library.io) 'token_storage_stub.dart';
 
 class TokenStorage {
   static const _keyToken = 'auth_token';
   static const _expiryBufferSeconds = 30;
 
-  final FlutterSecureStorage _storage;
+  final FlutterSecureStorage _secureStorage;
 
   TokenStorage([FlutterSecureStorage? storage])
-    : _storage = storage ?? const FlutterSecureStorage();
+    : _secureStorage = storage ?? const FlutterSecureStorage();
 
   Future<void> save(String token) async {
-    await _storage.write(key: _keyToken, value: token);
+    if (kIsWeb) {
+      webStorageWrite(_keyToken, token);
+    } else {
+      await _secureStorage.write(key: _keyToken, value: token);
+    }
   }
 
   Future<String?> load() async {
-    final token = await _storage.read(key: _keyToken);
+    String? token;
+    if (kIsWeb) {
+      token = webStorageRead(_keyToken);
+    } else {
+      token = await _secureStorage.read(key: _keyToken);
+    }
+
     if (token == null) return null;
 
     if (isExpired(token)) {
@@ -28,7 +41,11 @@ class TokenStorage {
   }
 
   Future<void> clear() async {
-    await _storage.delete(key: _keyToken);
+    if (kIsWeb) {
+      webStorageDelete(_keyToken);
+    } else {
+      await _secureStorage.delete(key: _keyToken);
+    }
   }
 
   static bool isExpired(String token) {
