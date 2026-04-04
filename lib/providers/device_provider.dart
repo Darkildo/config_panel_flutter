@@ -12,12 +12,18 @@ class DeviceProvider extends ChangeNotifier {
   String? _error;
   bool? _filterActive;
   String _searchQuery = '';
+  bool _isCreating = false;
+  String? _createError;
+  bool _isSaving = false;
 
   List<Device> get devices => _devices;
   bool get isLoading => _isLoading;
   String? get error => _error;
   bool? get filterActive => _filterActive;
   String get searchQuery => _searchQuery;
+  bool get isCreating => _isCreating;
+  String? get createError => _createError;
+  bool get isSaving => _isSaving;
 
   void setFilter(bool? isActive) {
     _filterActive = isActive;
@@ -35,7 +41,6 @@ class DeviceProvider extends ChangeNotifier {
     _isLoading = true;
     _error = null;
     notifyListeners();
-
     try {
       _devices = await _api.listDevices(
         ListDevicesRequest(
@@ -52,12 +57,6 @@ class DeviceProvider extends ChangeNotifier {
     }
   }
 
-  bool _isCreating = false;
-  String? _createError;
-
-  bool get isCreating => _isCreating;
-  String? get createError => _createError;
-
   Future<bool> createDevice({
     required String hostname,
     required String ip,
@@ -67,7 +66,6 @@ class DeviceProvider extends ChangeNotifier {
     _isCreating = true;
     _createError = null;
     notifyListeners();
-
     try {
       await _api.createDevice(
         CreateDeviceRequest(
@@ -84,6 +82,52 @@ class DeviceProvider extends ChangeNotifier {
     } catch (e) {
       _createError = e.toString().replaceFirst('Exception: ', '');
       _isCreating = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> updateDevice({
+    required int id,
+    String? hostname,
+    String? ip,
+    String? location,
+    bool? isActive,
+  }) async {
+    _isSaving = true;
+    _error = null;
+    notifyListeners();
+    try {
+      await _api.updateDevice(
+        UpdateDeviceRequest(
+          id: id,
+          hostname: hostname,
+          ip: ip,
+          location: location,
+          isActive: isActive,
+        ),
+      );
+      _isSaving = false;
+      notifyListeners();
+      await loadDevices();
+      return true;
+    } catch (e) {
+      _error = e.toString().replaceFirst('Exception: ', '');
+      _isSaving = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> deleteDevice(int id) async {
+    _error = null;
+    notifyListeners();
+    try {
+      await _api.deleteDevice(id);
+      await loadDevices();
+      return true;
+    } catch (e) {
+      _error = e.toString().replaceFirst('Exception: ', '');
       notifyListeners();
       return false;
     }

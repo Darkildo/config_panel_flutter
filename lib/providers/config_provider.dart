@@ -30,7 +30,6 @@ class ConfigProvider extends ChangeNotifier {
     _error = null;
     _page = page;
     notifyListeners();
-
     try {
       final response = await _api.listConfigs(
         ListConfigsRequest(deviceId: deviceId, page: page, pageSize: _pageSize),
@@ -56,7 +55,6 @@ class ConfigProvider extends ChangeNotifier {
     _isSaving = true;
     _error = null;
     notifyListeners();
-
     try {
       await _api.createConfig(
         CreateConfigRequest(
@@ -77,11 +75,49 @@ class ConfigProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> updateConfig({
+    required int configId,
+    required int deviceId,
+    String? version,
+    String? content,
+  }) async {
+    _isSaving = true;
+    _error = null;
+    notifyListeners();
+    try {
+      await _api.updateConfig(
+        UpdateConfigRequest(id: configId, version: version, content: content),
+      );
+      _isSaving = false;
+      notifyListeners();
+      await loadConfigs(deviceId);
+      return true;
+    } catch (e) {
+      _error = e.toString().replaceFirst('Exception: ', '');
+      _isSaving = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> deleteConfig(int configId, int deviceId) async {
+    _error = null;
+    notifyListeners();
+    try {
+      await _api.deleteConfig(configId);
+      await loadConfigs(deviceId);
+      return true;
+    } catch (e) {
+      _error = e.toString().replaceFirst('Exception: ', '');
+      notifyListeners();
+      return false;
+    }
+  }
+
   Future<bool> applyConfig(int configId, int deviceId) async {
     _isApplying = true;
     _error = null;
     notifyListeners();
-
     try {
       await _api.applyConfig(configId);
       _isApplying = false;

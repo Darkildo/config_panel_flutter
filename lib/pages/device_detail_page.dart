@@ -73,6 +73,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       ),
     );
   }
+
   Widget _buildWideLayout(Device? device, ConfigProvider configProvider) {
     return Padding(
       padding: EdgeInsets.all(context.isDesktop ? 16 : 12),
@@ -97,6 +98,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       ),
     );
   }
+
   Widget _buildNarrowLayout(Device? device, ConfigProvider configProvider) {
     return DefaultTabController(
       length: 3,
@@ -138,6 +140,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       ),
     );
   }
+
   Widget _buildTopBar(BuildContext context, Device? device) {
     final isMobile = context.isMobile;
 
@@ -199,6 +202,46 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
             ),
           ),
 
+          if (device != null) ...[
+            isMobile
+                ? IconButton(
+                    icon: const Icon(
+                      Icons.edit,
+                      color: RetroColors.neonCyan,
+                      size: 20,
+                    ),
+                    tooltip: 'Edit Device',
+                    onPressed: () => _showEditDeviceDialog(context, device),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  )
+                : RetroButton(
+                    label: 'EDIT',
+                    icon: Icons.edit,
+                    accentColor: RetroColors.neonCyan,
+                    onPressed: () => _showEditDeviceDialog(context, device),
+                  ),
+            SizedBox(width: isMobile ? 4 : 8),
+            isMobile
+                ? IconButton(
+                    icon: const Icon(
+                      Icons.delete_outline,
+                      color: RetroColors.neonRed,
+                      size: 20,
+                    ),
+                    tooltip: 'Delete Device',
+                    onPressed: () => _showDeleteDeviceDialog(context),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  )
+                : RetroButton(
+                    label: 'DELETE',
+                    icon: Icons.delete_outline,
+                    accentColor: RetroColors.neonRed,
+                    onPressed: () => _showDeleteDeviceDialog(context),
+                  ),
+            SizedBox(width: isMobile ? 4 : 8),
+          ],
           isMobile
               ? IconButton(
                   icon: const Icon(
@@ -221,6 +264,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       ),
     );
   }
+
   Widget _buildDeviceInfo(Device? device) {
     if (device == null) {
       return RetroWindow(
@@ -323,6 +367,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
             ),
     );
   }
+
   Widget _buildUploadForm(ConfigProvider configProvider) {
     return RetroWindow(
       title: 'UPLOAD NEW CONFIG',
@@ -411,6 +456,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       );
     }
   }
+
   Widget _buildConfigHistory(ConfigProvider configProvider) {
     return RetroWindow(
       title: 'CONFIG HISTORY // ${configProvider.configs.length} VERSIONS',
@@ -505,6 +551,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     }
   }
 }
+
 class _ConfigTile extends StatelessWidget {
   final DeviceConfig config;
   final bool isExpanded;
@@ -592,6 +639,7 @@ class _ConfigTile extends StatelessWidget {
       ],
     );
   }
+
   Widget _buildMobileHeader(DateFormat dateFormat) {
     return Column(
       crossAxisAlignment: .start,
@@ -658,6 +706,7 @@ class _ConfigTile extends StatelessWidget {
       ],
     );
   }
+
   Widget _buildDesktopHeader(DateFormat dateFormat) {
     return Row(
       children: [
