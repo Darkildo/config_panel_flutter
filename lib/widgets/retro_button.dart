@@ -61,12 +61,15 @@ class _RetroButtonState extends State<RetroButton> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               child: widget.isLoading
-                  ? SizedBox(
-                      height: 18,
-                      width: 18,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation(accent),
+                  ? Center(
+                      heightFactor: 1,
+                      child: SizedBox(
+                        height: 18,
+                        width: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation(accent),
+                        ),
                       ),
                     )
                   : Row(
