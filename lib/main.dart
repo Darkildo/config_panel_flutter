@@ -73,7 +73,7 @@ class _ConfigPanelAppState extends State<ConfigPanelApp> {
         Provider<ApiService>.value(value: widget.apiService),
       ],
       child: MaterialApp.router(
-        title: 'CTRL PANEL // Device Config Manager',
+        title: 'CTRL PANEL',
         debugShowCheckedModeBanner: false,
         theme: RetroTheme.darkTheme,
         routerConfig: _appRouter.router,
